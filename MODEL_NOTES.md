@@ -514,7 +514,7 @@ Method: headless renders from `dev/model.html?model=sales-office-interior`, comp
 - **Discussion area.** The drawn flutes have a stepped top edge; the model runs them full height.
 - **Reception.** The arches are wider in the perspective and spring lower, with benches set into them. The fluted back wall with signage is not modelled.
 - **Ceiling.** The false ceiling, coves and pendant lights (RCP and sections) are not modelled; the cutaway removes the ceiling.
-- **Furniture.** Simple blocks. The round reception seating is a plain ring.
+- **Furniture.** Simple blocks. The reception centrepiece is a flat circular carpet with a square table on it.
 - **Signage.** Shreepati Developers' name and logo are left out on purpose.
 
 **Guessed, and could be wrong**

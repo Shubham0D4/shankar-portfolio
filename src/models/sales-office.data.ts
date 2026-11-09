@@ -141,7 +141,7 @@ export const FLUTE = { pitch: 0.07, pitchCoarse: 0.1, width: 0.032, depth: 0.04 
 
 export type Kind = 'wood' | 'chair' | 'sofa' | 'white' | 'plant';
 export const FURNITURE: { r: R4; y0: number; y1: number; k: Kind }[] = [
-  // Reception: sofa, round seating, desk, plants.
+  // Reception: sofa, desk, plants (carpet and centre table: CENTREPIECE).
   { r: [0.3, 5.8, 1.1, 8.3], y0: FLOOR, y1: 1.0, k: 'sofa' },
   { r: [3.6, 5.9, 4.2, 8.0], y0: FLOOR, y1: 1.05, k: 'wood' },
   { r: [0.4, 4.9, 0.9, 5.4], y0: FLOOR, y1: 1.2, k: 'plant' },
@@ -177,8 +177,8 @@ export const CHAIRS: V2[] = [
   [4.6, 6.5], [4.6, 7.4],
 ];
 
-/** Reception round seating: centre and radii. */
-export const ROUND = { c: [2.4, 7.0] as V2, r0: 0.55, r1: 1.2 };
+/** Reception centrepiece: a circular carpet with a square table on it. */
+export const CENTREPIECE = { c: [2.4, 7.0] as V2, rug: 1.2, rugH: 0.015, table: 0.8, tableH: 0.45 };
 
 /* ---------- Story and key ---------- */
 

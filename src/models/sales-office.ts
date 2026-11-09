@@ -65,6 +65,7 @@ const C = {
   wood: new Color(0xa8703f),
   chair: new Color(0x55504a),
   sofa: new Color(0x8a837a),
+  rug: new Color(0xb8ad9c),
   white: new Color(0xe9e5dd),
   plant: new Color(0x7d8b6a),
   paving: new Color(0xb79a82),
@@ -383,8 +384,13 @@ export async function createSalesOffice(canvas: HTMLCanvasElement, opts: ModelOp
     return paint(prism(rect(...f.r), f.y0, f.y1), KIND[f.k]);
   });
   for (const [x, z] of D.CHAIRS) furn.push(paint(prism(rect(x - 0.24, z - 0.24, x + 0.24, z + 0.24), D.FLOOR, D.FLOOR + 0.5), C.chair));
-  const circle = (r: number): V2[] => Array.from({ length: 32 }, (_, i) => [D.ROUND.c[0] + r * Math.cos((i / 32) * Math.PI * 2), D.ROUND.c[1] + r * Math.sin((i / 32) * Math.PI * 2)]);
-  furn.push(paint(prism(circle(D.ROUND.r1), D.FLOOR, D.FLOOR + 0.45, [circle(D.ROUND.r0)]), C.sofa));
+  // Reception centrepiece: circular carpet, square table centred on it.
+  const P = D.CENTREPIECE;
+  const [cx, cz] = P.c;
+  const rug: V2[] = Array.from({ length: 48 }, (_, i) => [cx + P.rug * Math.cos((i / 48) * Math.PI * 2), cz + P.rug * Math.sin((i / 48) * Math.PI * 2)]);
+  furn.push(paint(prism(rug, D.FLOOR, D.FLOOR + P.rugH), C.rug));
+  const h = P.table / 2;
+  furn.push(paint(prism(rect(cx - h, cz - h, cx + h, cz + h), D.FLOOR + P.rugH, D.FLOOR + P.tableH), C.wood));
   const furnGeo = own(merge(furn));
   const furnMat = own(new MeshStandardMaterial({ vertexColors: true, roughness: 0.8, transparent: true, opacity: 0 }));
   const furniture = new Mesh(furnGeo, furnMat);

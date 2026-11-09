@@ -1,0 +1,676 @@
+{
+  "source": "portfolio.pdf (50 pages, A3 landscape), titled 'Architectural Portfolio – Undergraduate Selected Works'",
+  "architect": {
+    "full_name": "Shankar Shilpa Abhijit Wagh",
+    "display_name": "Shankar Wagh",
+    "statement": "I view architecture as a dialogue between people and space — where creativity meets purpose. As a learner, I design with curiosity, precision, and empathy, aiming to create spaces that evoke emotion and lasting memories. My goal is to shape meaningful, human-centered designs that inspire and endure.",
+    "philosophy": null,
+    "bio": null,
+    "education": [
+      {
+        "qualification": "Bachelor of Architecture",
+        "institution": "Sir J.J. College of Architecture, Mumbai",
+        "status": "Fourth-year student, expected graduation 2027",
+        "score": "CGPI 7.19"
+      },
+      {
+        "qualification": "Higher Secondary Education",
+        "institution": "New Arts, Commerce & Science College, Ahmednagar",
+        "score": "90.83%"
+      },
+      {
+        "qualification": "Secondary Education",
+        "institution": "Bhausaheb Firodiya Highschool, Ahmednagar",
+        "score": "92.20%"
+      }
+    ],
+    "workshops_electives": [
+      "Rammed Earth and CSEB Workshop (Sankalan-Hunarshala)",
+      "Architectural Styles & History",
+      "Mural Painting",
+      "Visual Merchandising & Event Design",
+      "Rhino & Grasshopper",
+      "Photoshop & Lumion",
+      "Disaster Management"
+    ],
+    "software": [
+      "AutoCAD",
+      "SketchUp",
+      "Rhino",
+      "Lumion",
+      "Enscape",
+      "Photoshop",
+      "MS Office"
+    ],
+    "languages": [
+      "English",
+      "Marathi",
+      "Hindi"
+    ],
+    "soft_skills": [
+      "Public Relations",
+      "Teamwork",
+      "Time Management",
+      "Leadership",
+      "Effective Communication",
+      "Critical Thinking",
+      "Creativity"
+    ],
+    "extracurricular": [
+      "Technical Head, Students Council, 2024-25",
+      "Coordinator for Placements of BO'25, July 2025"
+    ],
+    "portrait": "/assets/about/portrait.jpg",
+    "pdf_pages": [
+      1,
+      2
+    ],
+    "cv_sheet": "/assets/sheets/about-p02-cv-contents.jpg"
+  },
+  "contact": {
+    "phones": [
+      "7588799481",
+      "9175580715"
+    ],
+    "email": "shankar.abhijit.wagh14@gmail.com",
+    "location": "Ahmednagar",
+    "linkedin_label": "Shankar Wagh",
+    "linkedin_url": null
+  },
+  "awards": [],
+  "exhibitions": [],
+  "competitions": [
+    {
+      "name": "Irshalpada Rehabilitation",
+      "project_slug": "irshalpada",
+      "result": null,
+      "pdf_pages": [
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43
+      ]
+    },
+    {
+      "name": "Navbharat Dharavi Redevelopment Competition",
+      "project_slug": "dharavi-rerooted",
+      "result": null,
+      "pdf_pages": [
+        47,
+        48,
+        49,
+        50
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "slug": "mass-housing",
+      "title": "Mass Housing",
+      "semester": "Semester 7 (Architectural Design)",
+      "year": null,
+      "location": "Byculla, Mumbai, Maharashtra (near Saat Rasta)",
+      "typology": "High-rise mass housing with podium parking and retail",
+      "client": null,
+      "area_dimensions": {
+        "site_area_sqm": 25785.7,
+        "total_permissible_builtup_area_sqm": 104432.09,
+        "total_builtup_area_sqm": 104143.32,
+        "area_for_retail_sqm": 3000,
+        "area_for_retail_proposed_sqm": 2625.495,
+        "gov_amenities_5pct_sqm": 2078,
+        "los_sqm": 5926.925,
+        "recreational_space_sqm": 2088.6418,
+        "total_refuge_area_sqm": 2782.1712,
+        "total_bua_calculated_in_fsi_sqm": 101361.1488,
+        "amenities_plot_sqm": 2078.7,
+        "podium_top_level_m": 21.45,
+        "first_floor_level_m": 24,
+        "terrace_levels_m": "about +130.45 (D, E and F wings) to +145.45 (A, B and C wings), read from sections and elevations",
+        "units": {
+          "2BHK": 560,
+          "3BHK_A_and_B": 312,
+          "4BHK": 160,
+          "total": 1032
+        },
+        "unit_areas_sqm": {
+          "2BHK": {
+            "bua": 89.42,
+            "carpet": 70
+          },
+          "3BHK_A": {
+            "bua": 113,
+            "carpet": 100.21
+          },
+          "3BHK_B": {
+            "carpet": 97.21
+          },
+          "4BHK": {
+            "bua": 148,
+            "carpet": 127
+          }
+        },
+        "parking_total": 1906,
+        "parking_large_cars": 1330,
+        "parking_small_cars": 576
+      },
+      "materials": [],
+      "description": "The site sits near one of the busiest roads in South Mumbai, where it meets Saat Rasta, so the project includes retail shops. The site has views in every direction, so making use of views was a priority. Instead of one large podium, two podiums are provided, which keeps the built footprint small and leaves the most ground open. A central recreational space is enclosed by the towers around it, giving it good airflow and privacy. Wings D, E and F are physically connected to get the desired form. The inspiration is Future Towers, Amanora Township, Pune.",
+      "key_facts": [
+        "Design progression in four stages. Stage 1 had 8 towers around a central space on the ground. Stage 2 divided the podium for access and opened the centre. Stage 3 formed a more open layout. In the final stage the number of towers was reduced and a large central open space was designed with a minimum footprint.",
+        "Climate: tropical wet and dry, with heavy rain from June to September. Wind path from south-west to north-east.",
+        "Three basements and six podium levels of parking.",
+        "Podium-top amenities include a gym, spa, library and reading area, indoor games, kids' and elderly areas, swimming pool, kids' pool, deck and bridge.",
+        "Ground level holds a multipurpose area, amphitheatre, waterbody, basketball, tennis and badminton courts, and a cricket turf."
+      ],
+      "images": [
+        "/assets/mass-housing/aerial-podium.jpg",
+        "/assets/mass-housing/amphitheatre-small.jpg",
+        "/assets/mass-housing/amphitheatre.jpg",
+        "/assets/mass-housing/b-wing-view.jpg",
+        "/assets/mass-housing/central-open-space-from-bridge.jpg",
+        "/assets/mass-housing/central-pond.jpg",
+        "/assets/mass-housing/def-wing-view.jpg",
+        "/assets/mass-housing/design-progression.jpg",
+        "/assets/mass-housing/east-view.jpg",
+        "/assets/mass-housing/ground-floor-plan.jpg",
+        "/assets/mass-housing/hero-towers-low-angle.jpg",
+        "/assets/mass-housing/kids-play.jpg",
+        "/assets/mass-housing/retail-view.jpg",
+        "/assets/mass-housing/roof-plan.jpg",
+        "/assets/mass-housing/seating-ground-floor.jpg",
+        "/assets/mass-housing/sections.jpg",
+        "/assets/mass-housing/site-analysis.jpg",
+        "/assets/mass-housing/towers-distant-view.jpg",
+        "/assets/mass-housing/towers-podium-view.jpg",
+        "/assets/mass-housing/towers-sky.jpg"
+      ],
+      "sheets": [
+        "/assets/sheets/mass-housing-p03-cover-site-concept.jpg",
+        "/assets/sheets/mass-housing-p04-ground-roof-plans-sections.jpg",
+        "/assets/sheets/mass-housing-p05-basement-podium-plans.jpg",
+        "/assets/sheets/mass-housing-p06-podium-typical-refuge-plans-views.jpg",
+        "/assets/sheets/mass-housing-p07-def-wing-elevation-section.jpg",
+        "/assets/sheets/mass-housing-p08-abc-wing-sections-units.jpg"
+      ],
+      "pdf_pages": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "notes": "The final number of towers is not stated. Wings A to F appear on the drawings."
+    },
+    {
+      "slug": "residential-school",
+      "title": "Residential School",
+      "semester": "Semester 6 (Architectural Design)",
+      "year": null,
+      "location": "Kanoi village, 35 km from Jaisalmer, Rajasthan",
+      "typology": "Educational campus: residential school with hostels and staff housing",
+      "client": null,
+      "area_dimensions": {
+        "site_area": null,
+        "site_levels_m": "contour bands from below 149 to above 173",
+        "academic_block_levels_m": "first ground floor at 161, last ground-floor level at 167",
+        "library_levels_m": "159 to 157",
+        "mess_level_m": 156,
+        "drawing_scales": "1:200 and 1:100"
+      },
+      "materials": [
+        "Yellow sandstone (locally available)",
+        "Jalis"
+      ],
+      "description": "The site has a lake that is a major source of water for the village and a gathering place where the village mela happens. Because water is scarce, the design keeps the lake from being affected or polluted by construction and slightly enlarges it for water retention and views. Different levels follow the natural contours instead of flattening a large area, without breaking the flow of space. Ramps and lifts make it universally accessible. Blocks use wind direction and sun path for daylight and natural ventilation. Courtyards and jalis aid ventilation. Space is left between structures so rainwater can flow to the lake. The academic block allows future expansion. Pathways connect all spaces with no dark or unsafe corners.",
+      "key_facts": [
+        "Masterplan components: 1 security cabin, 2 auditorium, 3 entrance and admin block, 4 multipurpose hall, 5 academic block, 6 library and laboratories, 7 indoor games block, 8 playground, 9 mess, 10 boys' hostel, 11 faculty accommodation, 12 girls' hostel, 13 director's accommodation, 14 deputy director's accommodation, 15 amphitheatre, 16 parking, 17 lake.",
+        "Admin block: a ground-storey structure on three levels expressing a hierarchy. The principal's office is at the top, the admin office in the middle, and the entrance zone with display area and cafeteria at the bottom.",
+        "Academic block: G+1 on several levels following the contours. Inspired by Smritivan Earthquake Museum, Bhuj. Rajasthani style gives it the look of a fort.",
+        "Library and laboratories: G+1 in front of the academic block, stepping from 159 m to 157 m, with a ramp as its main feature and the feel of a basement.",
+        "Indoor sports block: G+1 at the centre of the site with a badminton court courtyard, stepped seating toward the playground usable as an amphitheatre, and studios for dance, drama and painting.",
+        "Mess: ground storey in a mixed Rajasthani and modern style, planned around students' daily routine, with a service driveway.",
+        "SWOT. Strengths: rich culture, unique local architecture, community involvement, local material. Weaknesses: harsh climate, water scarcity, limited infrastructure. Opportunities: sustainable design, educational empowerment, cultural preservation, tourism. Threats: climate change, environmental degradation, socio-economic disparity."
+      ],
+      "images": [
+        "/assets/residential-school/academic-front-elevation.jpg",
+        "/assets/residential-school/academic-section.jpg",
+        "/assets/residential-school/academic-views.jpg",
+        "/assets/residential-school/admin-front-elevation.jpg",
+        "/assets/residential-school/admin-section.jpg",
+        "/assets/residential-school/admin-views.jpg",
+        "/assets/residential-school/climate-topography.jpg",
+        "/assets/residential-school/concept-diagrams.jpg",
+        "/assets/residential-school/cover-courtyard-ramps.jpg",
+        "/assets/residential-school/library-views.jpg",
+        "/assets/residential-school/masterplan.jpg",
+        "/assets/residential-school/mess-front-elevation.jpg",
+        "/assets/residential-school/mess-views.jpg",
+        "/assets/residential-school/roofplan.jpg",
+        "/assets/residential-school/section-xx.jpg",
+        "/assets/residential-school/site-aerial.jpg",
+        "/assets/residential-school/site-photo-1.jpg",
+        "/assets/residential-school/site-photo-2.jpg",
+        "/assets/residential-school/site-photo-3.jpg",
+        "/assets/residential-school/site-photo-4.jpg",
+        "/assets/residential-school/sports-courtyard-views.jpg"
+      ],
+      "sheets": [
+        "/assets/sheets/residential-school-p09-cover.jpg",
+        "/assets/sheets/residential-school-p10-site-swot-concept.jpg",
+        "/assets/sheets/residential-school-p11-masterplan-roofplan-section.jpg",
+        "/assets/sheets/residential-school-p12-admin-block.jpg",
+        "/assets/sheets/residential-school-p13-academic-block.jpg",
+        "/assets/sheets/residential-school-p14-library-sports-blocks.jpg",
+        "/assets/sheets/residential-school-p15-mess.jpg"
+      ],
+      "pdf_pages": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "notes": "Sheets for pages 10 to 15 are embedded at 72 ppi, so these images are low resolution."
+    },
+    {
+      "slug": "sukoon-resort",
+      "title": "Sukoon Resort",
+      "semester": "Semester 5 (Architectural Design), Sir J.J. College of Architecture",
+      "year": null,
+      "location": "Mawal, Kamshet, Maharashtra (beside Uksan dam)",
+      "typology": "Hospitality: waterfront resort",
+      "client": null,
+      "area_dimensions": {
+        "site_area": "22.55 acres (label partly legible on p17; verify)",
+        "guest_rooms": 48,
+        "masterplan_scale": "1:750",
+        "building_scales": "1:100"
+      },
+      "materials": [
+        "Terracotta jali",
+        "Brick",
+        "Clay roof tiles (as rendered)",
+        "Timber cladding (as rendered)",
+        "Transparent acrylic sheet on pergola (cafe)"
+      ],
+      "description": "The architect's statement: \"My dream is to spend my vacation where my stay will be in village. I like the early morning sunlight, I like to walk in village, I love to talk to people and to do group activities.\" The resort incorporates these through gardens, sit-outs and an amphitheatre, and common open spaces between accommodation blocks. There are two residential zones. One is exposed to interactive public spaces. The other is quieter and private, with villas. Open structures are designed without disturbing privacy, with breathing space between buildings and similar structures clubbed together. The aim is to give the user the feel of Sukoon.",
+      "key_facts": [
+        "Concept: voids between structures for visual connection to the surroundings. Light and shadow through terracotta jalis for privacy and visual connection. Courtyard planning for daylight and to keep interiors cool.",
+        "Inspirations: stepped garden and amphitheatre near a waterfront.",
+        "Programme: parking, reception, multipurpose area, cafe, two restaurants, guest villas, dormitories, archery, guest rooms, guest suites, badminton and tennis courts, sit-out space, multipurpose garden, service block, amphitheatre, stepped garden, deck, gym and indoor games, spa, changing area, common swimming pool, and an amphitheatre (kund).",
+        "Villa: 4BHK, G+1, on the edge of the site with a private pool facing the dam.",
+        "Guest rooms: 48 in total, six per cluster, with views on both sides.",
+        "Dormitories: for 10 people, two clustered together. Suite rooms share a common courtyard space.",
+        "Multipurpose hall: octagonal, with a stage and a roof cavity to stay cool in summer.",
+        "Reception: open reception inspired by Anchaviyo Resort.",
+        "Restaurants: one on the lake front with a central courtyard and a dining deck. One on the east side with river and dam views.",
+        "Cafe: open, with bush partitions and a pergola roof under transparent acrylic sheet."
+      ],
+      "images": [
+        "/assets/sukoon-resort/cafe-pergola.jpg",
+        "/assets/sukoon-resort/concept-diagrams.jpg",
+        "/assets/sukoon-resort/cover-reception.jpg",
+        "/assets/sukoon-resort/dormitory-suite-layout.jpg",
+        "/assets/sukoon-resort/guest-room-elevations.jpg",
+        "/assets/sukoon-resort/guest-room-layout.jpg",
+        "/assets/sukoon-resort/inspirations.jpg",
+        "/assets/sukoon-resort/masterplan.jpg",
+        "/assets/sukoon-resort/multipurpose-hall.jpg",
+        "/assets/sukoon-resort/reception-isometric.jpg",
+        "/assets/sukoon-resort/reception-layout.jpg",
+        "/assets/sukoon-resort/restaurant-1-layout.jpg",
+        "/assets/sukoon-resort/restaurant-1-view.jpg",
+        "/assets/sukoon-resort/restaurant-2-layout.jpg",
+        "/assets/sukoon-resort/restaurant-2-view.jpg",
+        "/assets/sukoon-resort/site-context.jpg",
+        "/assets/sukoon-resort/spa-cafe-layout.jpg",
+        "/assets/sukoon-resort/villa-layout.jpg",
+        "/assets/sukoon-resort/villa-views.jpg"
+      ],
+      "sheets": [
+        "/assets/sheets/sukoon-resort-p16-cover.jpg",
+        "/assets/sheets/sukoon-resort-p17-concept-sheet.jpg",
+        "/assets/sheets/sukoon-resort-p18-masterplan.jpg",
+        "/assets/sheets/sukoon-resort-p19-villa-spa-cafe-guestroom-dorm.jpg",
+        "/assets/sheets/sukoon-resort-p20-reception-hall-restaurants.jpg"
+      ],
+      "pdf_pages": [
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "notes": null
+    },
+    {
+      "slug": "hotel-working-drawing",
+      "title": "Hotel – Working Drawings",
+      "semester": "Semester 6 (T.Y. B.Arch), Working Drawing",
+      "year": null,
+      "location": null,
+      "typology": "Hospitality: hotel (technical working-drawing set)",
+      "client": null,
+      "area_dimensions": {
+        "drawing_scale": "1:100",
+        "column_size_mm": "600 x 400 (as noted on the centerline plan)",
+        "basements": 2,
+        "dates_on_sheets": [
+          "21/03/2025",
+          "25/04/2025"
+        ],
+        "site_frontage": "6 m wide roads on two sides"
+      },
+      "materials": [
+        "RCC frame",
+        "Brick cladding 25 mm on 230 mm brick wall",
+        "Vitrified tiles 1200x1200 (FF1)",
+        "Anti-skid mosaic tiles 300x300 (FF2)",
+        "Gypsum board false ceiling",
+        "Anti-skid granite stair treads",
+        "Stainless-steel balustrade"
+      ],
+      "description": "A working-drawing set for a hotel with an elongated octagonal plan over two basements. The set includes the setting-out plan, centerline plan with column schedule, lower basement plan, ground, first, typical and +11.3 m floor plans, front elevation with strip section and strip plan, section A-A', and a staircase and details sheet. Details cover the floor spring, revolving window, brick cladding and baluster joinery.",
+      "key_facts": [
+        "Ground floor: entry, drop-off with ramps, waiting lobby, reception area, office, multipurpose hall, lunch area, green rooms.",
+        "Section A-A' shows two basements, an office level, a service area and stacked guest-room floors under an overhead tank.",
+        "General notes call out P.C.C. and R.C.C. concrete grades and a 200 mm sunk toilet slab filled with brick-bat coba."
+      ],
+      "images": [
+        "/assets/hotel-working-drawing/centerline-plan.jpg",
+        "/assets/hotel-working-drawing/front-elevation.jpg",
+        "/assets/hotel-working-drawing/section-aa.jpg",
+        "/assets/hotel-working-drawing/setting-out.jpg",
+        "/assets/hotel-working-drawing/staircase-details.jpg"
+      ],
+      "sheets": [
+        "/assets/sheets/hotel-working-drawing-p22-setting-out-plan.jpg",
+        "/assets/sheets/hotel-working-drawing-p23-centerline-plan.jpg",
+        "/assets/sheets/hotel-working-drawing-p24-lower-basement-plan.jpg",
+        "/assets/sheets/hotel-working-drawing-p25-floor-plans.jpg",
+        "/assets/sheets/hotel-working-drawing-p26-front-elevation.jpg",
+        "/assets/sheets/hotel-working-drawing-p27-section-aa.jpg",
+        "/assets/sheets/hotel-working-drawing-p28-staircase-details.jpg"
+      ],
+      "pdf_pages": [
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28
+      ],
+      "notes": "Location, site area, number of floors and built-up area are not stated legibly. Page 24 is embedded at 72 ppi."
+    },
+    {
+      "slug": "bandra-municipal",
+      "title": "Residential Building, Bandra – Municipal Drawings",
+      "semester": "Semester 7, Municipal Drawing",
+      "year": null,
+      "location": "Final Plot No. 1176 and 1177, Bandra, Mumbai (Guru Nanak Road)",
+      "typology": "Residential high-rise (statutory submission drawings)",
+      "client": null,
+      "area_dimensions": {
+        "plot_area_sqm": 2176.807,
+        "floors": "Ground (stilt) + 13, with the 8th as refuge floor",
+        "basements": 2,
+        "flats_per_typical_floor": 8,
+        "rera_carpet_sqm": {
+          "flats_1_2_6": 59.129,
+          "flats_3_4_7_8": 59.39813,
+          "flat_5_1BHK": 41.0757
+        },
+        "proposed_bua_typical_floor_sqm": 501.54,
+        "refuge_area_proposed_sqm": 126.1641,
+        "refuge_area_required_sqm": 124.32,
+        "fitness_centre_proposed_sqm": 124.4685,
+        "terrace_level_m": 42.2,
+        "date_on_sheets": "10/10/2025"
+      },
+      "materials": [],
+      "description": "A municipal submission set for a proposed residential building on Final Plots 1176 and 1177 in Bandra, Mumbai. It covers the ground-floor plan with plot, setback and LOS area triangulations, both basement parking plans, typical, 13th and refuge floor plans with built-up-area and RERA carpet calculations, and a terrace plan with section.",
+      "key_facts": [
+        "Ground floor: entrance canopy and lobby, society office, meter room, fitness centre, stilt parking and a 6 m ramp.",
+        "Upper basement parking: 20 big and 4 small cars.",
+        "Area statements include Proforma A (FSI) and Proforma B (sheet contents) tables."
+      ],
+      "images": [
+        "/assets/bandra-municipal/ground-floor-plan.jpg",
+        "/assets/bandra-municipal/section-terrace.jpg",
+        "/assets/bandra-municipal/typical-floor-area-diagram.jpg"
+      ],
+      "sheets": [
+        "/assets/sheets/bandra-municipal-p30-ground-floor-plan-areas.jpg",
+        "/assets/sheets/bandra-municipal-p31-upper-basement-plan.jpg",
+        "/assets/sheets/bandra-municipal-p32-lower-basement-plan.jpg",
+        "/assets/sheets/bandra-municipal-p33-typical-floor-areas.jpg",
+        "/assets/sheets/bandra-municipal-p34-13th-floor-areas.jpg",
+        "/assets/sheets/bandra-municipal-p35-refuge-floor-areas.jpg",
+        "/assets/sheets/bandra-municipal-p36-terrace-section.jpg"
+      ],
+      "pdf_pages": [
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36
+      ],
+      "notes": "Sheets are embedded at 72 ppi. Small numbers in the area tables are hard to read and were recorded only where clear."
+    },
+    {
+      "slug": "irshalpada",
+      "title": "Irshalpada Rehabilitation",
+      "semester": "Semester 3 / Competition",
+      "year": null,
+      "location": "Irshalwadi village, Raigad, Maharashtra",
+      "typology": "Post-disaster rehabilitation housing and community spaces",
+      "client": null,
+      "area_dimensions": {
+        "plinth_level_mm": 600,
+        "ridge_level_mm": 8500,
+        "cluster": "4 plots: 2 ground+1 storey houses and 2 ground storey houses",
+        "drawing_scales": "1:200, 1:100 and 1:50"
+      },
+      "materials": [
+        "CSEB blocks",
+        "Mangalore tiles (roof)",
+        "Bamboo slab (in G+1 houses)",
+        "Mud flooring",
+        "Terracotta jali (cooking space)",
+        "Lime layer on chicken mesh with waterproofing coat"
+      ],
+      "description": "On 19 July 2023 a massive landslide struck Irshalwadi village in Raigad. Before designing, the team contacted survivors to understand their requirements and lifestyle. Their houses were mostly brick, wattle and daub, with Mangalore tile roofs and stone plinths. Toilets were in the front or back yard and not part of the house. The residents are very social and closely connected to nature. The aim is to build a \"home\" where survivors feel as comfortable as before the landslide, one that does not hinder their ways of living but enhances them.",
+      "key_facts": [
+        "Clusters of 4 houses form a central community space between them.",
+        "A primary school serves as a community space, with a big open ground and a stage for gram panchayat meetings, marriages and gatherings.",
+        "The \"Temple of Memories\" is a memorial stone to remember those who lost their lives, and a community space to reflect on the past.",
+        "Each house has a central courtyard connecting all rooms, many openings for light and ventilation, a retained traditional verandah, and a place for the traditional chul.",
+        "Toilets are kept apart from the house but on the same plinth, considering the rainfall.",
+        "Materials match the residents' old houses so they do not feel alienated.",
+        "Climate: hottest months March and April, maximum rainfall in July until mid-September, wind mainly from the south-west."
+      ],
+      "images": [
+        "/assets/irshalpada/cluster-aerial.jpg",
+        "/assets/irshalpada/cluster-plans.jpg",
+        "/assets/irshalpada/cluster-sections.jpg",
+        "/assets/irshalpada/cluster-view-1.jpg",
+        "/assets/irshalpada/cluster-view-2.jpg",
+        "/assets/irshalpada/cluster-view-3.jpg",
+        "/assets/irshalpada/cluster-view-4.jpg",
+        "/assets/irshalpada/cover.jpg",
+        "/assets/irshalpada/g1-house-view-1.jpg",
+        "/assets/irshalpada/g1-house-view-2.jpg",
+        "/assets/irshalpada/g1-house-view-3.jpg",
+        "/assets/irshalpada/g1-house-view-4.jpg",
+        "/assets/irshalpada/ground-storey-view-1.jpg",
+        "/assets/irshalpada/ground-storey-view-2.jpg",
+        "/assets/irshalpada/ground-storey-view-3.jpg",
+        "/assets/irshalpada/ground-storey-view-4.jpg",
+        "/assets/irshalpada/materials.jpg",
+        "/assets/irshalpada/primary-school-view-1.jpg",
+        "/assets/irshalpada/primary-school-view-2.jpg",
+        "/assets/irshalpada/primary-school-view-3.jpg",
+        "/assets/irshalpada/primary-school-view-4.jpg",
+        "/assets/irshalpada/site-map.jpg",
+        "/assets/irshalpada/site-photos.jpg",
+        "/assets/irshalpada/temple-of-memories.jpg"
+      ],
+      "sheets": [
+        "/assets/sheets/irshalpada-p37-cover.jpg",
+        "/assets/sheets/irshalpada-p38-site-analysis-design.jpg",
+        "/assets/sheets/irshalpada-p39-materials-temple-of-memories.jpg",
+        "/assets/sheets/irshalpada-p40-cluster-design.jpg",
+        "/assets/sheets/irshalpada-p41-ground-storey-house.jpg",
+        "/assets/sheets/irshalpada-p42-ground-plus-one-house.jpg",
+        "/assets/sheets/irshalpada-p43-primary-school.jpg"
+      ],
+      "pdf_pages": [
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43
+      ],
+      "notes": "Competition entry. The sheets say \"we\" and carry the number 13273. Team members and results are not stated."
+    },
+    {
+      "slug": "sales-office-interior",
+      "title": "Sales Office – Interior Design",
+      "semester": "Semester 4, Interior Design",
+      "year": null,
+      "location": null,
+      "typology": "Commercial interior: sales office and show flat",
+      "client": "Shreepati Developers (named in the design brief)",
+      "area_dimensions": {
+        "ceiling_level_mm": 4800,
+        "floor_levels_mm": [
+          0,
+          300
+        ]
+      },
+      "materials": [
+        "Fluted panels",
+        "White and off-white palette",
+        "Fixed glazing"
+      ],
+      "description": "The interior design of a sales office for Shreepati Developers' upcoming project, with a reception, discussion area, AV room, director's cabin, sales cabins, admin office, toilet, pantry and storage. The theme is \"Lines\", expressed through fluted panels that create rhythm and continuity. Placing and cutting the panels in different ways makes different linear patterns on walls and elevations. The same theme carries into the show flat, which communicates the design language of the builder's project. A white and off-white palette makes the spaces brighter and larger. All windows are fixed glazing with air-conditioning. The passage avoids a static, \"dead\" corridor. The front facade also echoes the lines, carrying the theme from exterior to interior and reinforcing the builder's brand identity.",
+      "key_facts": [
+        "Hand-drawn and rendered sheets: front elevation, RCP, flooring layout, plan, perspectives and sections A-A' to F-F'."
+      ],
+      "images": [
+        "/assets/sales-office-interior/front-elevation-sketch.jpg",
+        "/assets/sales-office-interior/perspective-av-room.jpg",
+        "/assets/sales-office-interior/perspective-cabin.jpg",
+        "/assets/sales-office-interior/perspective-discussion.jpg",
+        "/assets/sales-office-interior/perspective-reception.jpg",
+        "/assets/sales-office-interior/plan-rcp-flooring.jpg",
+        "/assets/sales-office-interior/sections.jpg"
+      ],
+      "sheets": [
+        "/assets/sheets/sales-office-interior-p44-theme-elevation.jpg",
+        "/assets/sheets/sales-office-interior-p45-plan-rcp-flooring-views.jpg",
+        "/assets/sheets/sales-office-interior-p46-sections.jpg"
+      ],
+      "pdf_pages": [
+        44,
+        45,
+        46
+      ],
+      "notes": "Sheets are embedded at 72 ppi. Location and area are not stated."
+    },
+    {
+      "slug": "dharavi-rerooted",
+      "title": "Dharavi Rerooted",
+      "semester": "Competition (Navbharat Dharavi Redevelopment Competition)",
+      "year": null,
+      "location": "Dharavi, Mumbai, Maharashtra",
+      "typology": "Urban redevelopment: SRA rehabilitation and saleable housing",
+      "client": null,
+      "area_dimensions": {
+        "unit_1BHK_carpet": "32.30 sqm (348 sq ft)",
+        "unit_2BHK_carpet": "46.11 sqm (496.5 sq ft)",
+        "anganwadi_balwadi_sqm": 130,
+        "community_hall_sqm": 200,
+        "unit_height_m": 2.9,
+        "maintenance_calculation_basis": "22 floors, 16 flats per floor",
+        "submission_code": "DDQ2025-02-06"
+      },
+      "materials": [
+        "2-inch Bison panel partitions",
+        "Jali wall",
+        "Full-slit sliding windows"
+      ],
+      "description": "A redevelopment proposal across Dharavi's sectors with a clear spatial split between SRA and saleable units. This gives dignity and autonomy to both. Saleable units face inward around their own common areas. SRA blocks have their own identity, open spaces and circulation cores, with no shared entries. Buffer zones of landscape, service roads or amenities reinforce the separation. Plus-shaped towers are arranged around community courtyards, and anganwadis and community centres sit in the courtyards to bring care, learning and togetherness to the heart of the community.",
+      "key_facts": [
+        "Planning principles: versatility, adaptability, adaptability for future changes, efficient modular layout, easy-to-assemble building blocks, smart orientation, and common spaces and courtyards for a walkable neighbourhood.",
+        "Full-slit sliding windows reduce lintel and construction cost and increase light and ventilation.",
+        "Bison panel partitions save about 45–50% in cost against 150 mm brick partitions, build faster and add layout flexibility. Stated: ₹5,500–6,100 vs ₹10,300–11,800 for 8.25 sq m.",
+        "Maintenance: one building with 4 lifts instead of two buildings with 6 lifts. A corpus fund is stated at ₹40,000 per flat per annum, held in a fixed deposit controlled by BMC.",
+        "Units include loft provision, a jali wall and partitions residents can modify. The sheet also carries the theme \"Empowering women in each household\"."
+      ],
+      "images": [
+        "/assets/dharavi-rerooted/cluster-aerial.jpg",
+        "/assets/dharavi-rerooted/community-centre-diagram.jpg",
+        "/assets/dharavi-rerooted/community-centre-plan.jpg",
+        "/assets/dharavi-rerooted/dharavi-map.jpg",
+        "/assets/dharavi-rerooted/floor-plate-1bhk.jpg",
+        "/assets/dharavi-rerooted/floor-plate-2bhk.jpg",
+        "/assets/dharavi-rerooted/partition-maintenance-costs.jpg",
+        "/assets/dharavi-rerooted/planning-principles.jpg",
+        "/assets/dharavi-rerooted/skyline-render.jpg",
+        "/assets/dharavi-rerooted/tower-renders.jpg",
+        "/assets/dharavi-rerooted/unit-isometric-1bhk.jpg",
+        "/assets/dharavi-rerooted/unit-isometric-2bhk.jpg",
+        "/assets/dharavi-rerooted/unit-layout-1bhk.jpg",
+        "/assets/dharavi-rerooted/unit-layout-2bhk.jpg"
+      ],
+      "sheets": [
+        "/assets/sheets/dharavi-rerooted-p48-map-principles-costs.jpg",
+        "/assets/sheets/dharavi-rerooted-p49-1bhk-unit-floorplate.jpg",
+        "/assets/sheets/dharavi-rerooted-p50-2bhk-community-centre.jpg"
+      ],
+      "pdf_pages": [
+        47,
+        48,
+        49,
+        50
+      ],
+      "notes": "Competition entry. Team members and results are not stated. The year is implied only by the code DDQ2025-02-06."
+    }
+  ],
+  "dividers": [
+    "/assets/dividers/cover-p01.jpg",
+    "/assets/dividers/dharavi-p47.jpg",
+    "/assets/dividers/municipal-drawing-p29.jpg",
+    "/assets/dividers/working-drawing-p21.jpg"
+  ],
+  "gaps": [
+    "Calendar years are missing for every project. Only semesters are given. Dates appear only on drawing title blocks (Hotel 2025, Bandra 10/10/2025) and in the Dharavi code DDQ2025-02-06.",
+    "Clients are null for all projects except the Sales Office, which names Shreepati Developers in its brief. All are academic or competition work.",
+    "Team members for the Irshalpada and Dharavi competition entries are not named, although the sheets say 'we'.",
+    "Competition results are not stated. No awards or exhibitions are listed.",
+    "Locations are missing for the Hotel working drawings and the Sales Office interior.",
+    "Site areas are missing for the Residential School, Hotel, Sales Office and Dharavi. The Sukoon Resort area label is partly legible ('22.55 acres') and needs confirming.",
+    "The final number of towers in Mass Housing is not stated. Wings A to F appear in the drawings.",
+    "Materials are not stated for Mass Housing or the Bandra municipal set.",
+    "Building heights and floor counts for the Hotel are not legible.",
+    "There is no long-form bio or design philosophy, only the short CV statement.",
+    "The LinkedIn URL is missing. Only the name 'Shankar Wagh' is given.",
+    "Publishing decisions are needed: phone numbers, the portrait photo, and roll or entry numbers (2273, 13273) printed on the sheets.",
+    "The School, Hotel p24, Bandra and Sales Office sheets are embedded at 72 ppi, so their images are low resolution."
+  ]
+}

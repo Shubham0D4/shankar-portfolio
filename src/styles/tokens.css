@@ -1,0 +1,99 @@
+/* Design tokens. Rationale and contrast figures: DESIGN.md. */
+:root {
+  color-scheme: light;
+
+  /* Colour: drafting film, indigo ink, Jaisalmer sandstone */
+  --film: #ecede8; /* page ground: cool drafting film, not cream */
+  --film-deep: #dfe1da; /* placeholders, pressed states, the ground in diagrams */
+  --ink: #1e2756; /* indigo: all text, poché fills, the footer (12.06:1 on film) */
+  --ink-soft: #4a5279; /* secondary text on film (6.43:1) */
+  --ink-pale: #a9afc9; /* secondary text on ink (6.53:1) */
+  --gold: #d9a441; /* Jaisalmer sandstone: fills only, never text on film (1.91:1) */
+  --gold-lit: #c48f2f;
+  --gold-shade: #9c6f22;
+  --court: #6e8b5e; /* the courtyard void only */
+  --rule: rgb(30 39 86 / 0.22);
+  --rule-on-ink: rgb(236 237 232 / 0.22);
+
+  /* Semantic */
+  --bg: var(--film);
+  --text: var(--ink);
+  --text-muted: var(--ink-soft);
+  --mark: var(--gold); /* the current-page mark and active states */
+  --focus: var(--ink);
+
+  /* Type: one family, Anek Latin (Ek Type, Mumbai). Width carries the voice. */
+  --font: 'Anek Latin Variable', 'Arial Narrow', 'Segoe UI', system-ui, sans-serif;
+  --font-display: var(--font);
+  --font-text: var(--font);
+  --wdth-display: 75%;
+  --wdth-label: 87.5%;
+  --wght-display: 680;
+
+  /* Traditional scale, The Elements of Typographic Style */
+  --step--2: 0.75rem; /* 12 */
+  --step--1: 0.875rem; /* 14 */
+  --step-0: 1rem; /* 16 */
+  --step-1: 1.3125rem; /* 21 */
+  --step-2: 1.5rem; /* 24 */
+  --step-3: 2.25rem; /* 36 */
+  --step-4: 3rem; /* 48 */
+  --step-5: 3.75rem; /* 60 */
+  --step-6: 4.5rem; /* 72 */
+  --step-display: clamp(4.5rem, 1rem + 15vw, 12rem); /* 72 → 192, home hero only */
+  --text-body: clamp(1rem, 0.94rem + 0.28vw, 1.125rem); /* 16 → 18 */
+  --text-page-title: clamp(var(--step-5), 2rem + 6vw, 7.5rem); /* 60 → 120 */
+
+  --leading-display: 0.86;
+  --leading-heading: 1.05;
+  --leading-body: 1.55;
+  --measure: 66ch;
+
+  /* Space: 4 px base */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-s: 1rem;
+  --space-m: 1.5rem;
+  --space-l: 2rem;
+  --space-xl: 3rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
+  --space-4xl: 8rem;
+  --space-section: clamp(4rem, 2rem + 8vw, 10rem);
+
+  /* Layout */
+  --cols: 4;
+  --gutter: 1rem;
+  --margin: 1rem;
+  --frame-max: 90rem; /* 1440 */
+  --ratio-sheet: 1.4142; /* A3 landscape: the sheets the work was drawn on */
+  --hairline: 1px solid var(--rule);
+  --header-h: 4rem;
+  --bar-h: 3rem;
+
+  /* Motion */
+  --ease-light: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-response: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-instant: 120ms;
+  --dur-short: 240ms;
+  --dur-medium: 480ms;
+  --dur-cloud: 900ms;
+}
+
+@media (min-width: 40em) {
+  :root {
+    --cols: 8;
+    --gutter: clamp(1.25rem, 2vw, 1.5rem);
+    --margin: 4vw;
+  }
+}
+
+@media (min-width: 64em) {
+  :root {
+    --cols: 12;
+    --gutter: clamp(1.5rem, 2vw, 2rem);
+    --margin: min(4vw, 4rem);
+    --header-h: 4.5rem;
+  }
+}

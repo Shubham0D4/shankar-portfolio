@@ -590,3 +590,85 @@ Method: headless renders from `dev/model.html?model=dharavi-rerooted`, compared 
 - **Storey height.** 3.0 m.
 - **Context.** The existing Dharavi fabric.
 - **Wind.** The wind paths.
+
+---
+
+## 7. Building inspect (audit, 2026-11-12)
+
+The building-inspect feature lets the viewer click one building in a plan model and see it as a detailed model on its own stage. This section records the audit made before building it: what is in each plan model, how it is built, and what the PDF says about each building type.
+
+### 7.1 Buildings in each plan model
+
+| Model | Building type | Type id | Count | Built in the plan model as | Stable id today |
+|---|---|---|---|---|---|
+| Irshalpada | Ground-storey house (**type A**) | `irshalpada-house-a` | 22 | Merged into the cluster geometry. 11 clusters are drawn as instances, one InstancedMesh per material. | Cluster only (instanceId 0–10). The house is not identified. |
+| Irshalpada | Ground+1 house (**type B**) | `irshalpada-house-b` | 22 | As above | Cluster only |
+| Irshalpada | Primary school | `irshalpada-school` | 1 | Merged mesh per material, `aBlock = 11` | `school` |
+| Irshalpada | Temple of Memories (memorial, not a building) | `irshalpada-temple` | 1 | Merged mesh per material, `aBlock = 12` | `temple` |
+| Mass housing | H-plan tower (A, B, C wings) | `mass-tower-h` | 3 | One merged solid; `aBlock` per wing | `a`, `b`, `c` |
+| Mass housing | D–E–F connected "boomerang" | `mass-tower-def` | 1 building, 3 wings | Same merged solid; `aBlock` per wing | `d`, `e`, `f` |
+| Mass housing | Podium (north, south) | `mass-podium` | 2 | Same merged solid | `north`, `south` |
+| Mass housing | Multipurpose octagon | `mass-octagon` | 1 | Merged landscape | none |
+| Residential school | Academic, admin, library, sports, mess, auditorium, multipurpose hall, security cabin | one type each | 8 | One merged mesh, `aBlock` per block | `academic`, `admin`, … |
+| Residential school | Hostel block (boys, girls, faculty) | `school-hostel` | 3 | As above | `boys-hostel`, `girls-hostel`, `faculty` |
+| Residential school | Staff house (director, deputy) | `school-staff-house` | 2 | As above | `director`, `deputy` |
+| Residential school | Octagon pavilion | `school-octagon` | 1 | As above | `octagon` |
+| Sukoon resort | Villa | `sukoon-villa` | 10 | One merged mesh, `aBlock` per building (45 in all) | Index only |
+| Sukoon resort | Guest-room cluster | `sukoon-guest` | 9 | As above | Index only |
+| Sukoon resort | Suite block | `sukoon-suite` | 13 | As above | Index only |
+| Sukoon resort | Dormitory | `sukoon-dorm` | 2 | As above | Index only |
+| Sukoon resort | Reception, hall, cafe, 2 restaurants, spa, gym, changing, service | one type each | 9 | As above | Index only |
+| Dharavi | SRA tower (1BHK plate) | `dharavi-sra` | 4 | One merged solid, `aBlock` per tower | Range `sra` (0–3) |
+| Dharavi | Saleable tower (2BHK plate) | `dharavi-sale` | 4 | As above | Range `saleable` (4–7) |
+| Dharavi | Community centre | `dharavi-centre` | 1 | As above | `centre` |
+| Sales office | (one interior; nothing to select) | — | — | — | — |
+
+There are **about 120 selectable buildings in 30 types**. Irshalpada alone has 46 buildings in 4 types.
+
+### 7.2 Making every building selectable without changing the plan
+
+Every model already tags each vertex or instance with its block (`aBlock`), and its pick function already returns that block. The only case where a block holds more than one building is Irshalpada, where a block is a cluster of four houses.
+
+The proposed change is the smallest one that keeps the plan exactly as it is:
+- **No geometry, material or shader in a plan model changes.** Picking stays as it is. A new step resolves the building from the hit:
+  - For Irshalpada, the hit point is moved into the cluster's local frame and tested against the four house footprints. The ids come from the cluster and house index.
+  - For the other models, the building is the block.
+- **The registry lives in a separate data file** (`src/inspect/registry.ts`, pure data). Each building has a `buildingId`, `typeId`, `label`, a plan position, and a transform: cluster matrix × house placement × mirror. These are the `userData` fields the brief asks for, kept as data, because the plan meshes are merged and instanced and have no per-building objects to hang them on.
+- **The whole-building hover highlight is an overlay.** It is one extra mesh: the house type's merged shell, placed with the building's matrix and drawn in a warm translucent tint. It exists only while something is hovered or focused, so with nothing selected the plan scene renders exactly the same draw calls as before.
+- **Ids.** Plots are numbered 01–44 by cluster: `(cluster − 1) × 4 + house`, where houses 1–2 are the G+1 pair and 3–4 the ground-storey pair. A type A house on plot 12 is `irshalpada-a-12`. The others are `irshalpada-b-NN`, `irshalpada-school` and `irshalpada-temple`.
+
+### 7.3 What the PDF gives for each Irshalpada type
+
+| | Type A: ground-storey house (p41) | Type B: ground+1 house (p42) | Primary school (p43) | Temple of Memories (p39) |
+|---|---|---|---|---|
+| Plan | Floor plan with legend. Living, kitchen, 2 bedrooms, toilet, bath, courtyard. Doors shown by swing arcs; windows by double lines. **[stated]** | Ground and first floor. Living, kitchen, 3 bedrooms, toilet, bath, courtyard, stair. **[stated]** | Plan: 7 classrooms, staff room, principal, office, toilets, multipurpose area. **[stated]** | **None** |
+| Roof plan | 3 gabled wings (slope arrows) | Upper gable and 2 lean-tos | Main gable plus 6 stepped wings | None |
+| Sections and elevation | AA′, BB′, front elevation. Levels +600, +1500, +3100, +5900. **[stated]** | AA′, BB′, front elevation. Levels +600 to +8500. **[stated]** | AA′, BB′, front elevation. +600, +2700, +5300, +5800. **[stated]** | None |
+| Renders | 4: verandah with louvred folding doors; kitchen terracotta jali; garden; interior | 4: verandah and posts; balcony railing; street; side yard | 4 | 1 |
+| Materials | CSEB walls, lime plaster, Mangalore tile, mud floor, terracotta jali to the kitchen ("chul"), timber posts, doors and shutters **[stated / read]** | Same, plus a bamboo first-floor slab with mud screed and lime-mesh topping **[stated]** | Same **[read]** | Black stone plates, stone-block stepped plinth, pool, stone seat wall **[read]** |
+| Dimensions | Heights only. Plan size from the fitted scale (MODEL_NOTES §2), ±20 % | Heights only | Heights only | **None** |
+
+Readings of type A, the house built first:
+- **The elevation is mirrored relative to the plan.** Its large gable, with a double door between two windows behind verandah posts, is the living-room wing, which is 8 m wide. Its small gable, with a single window, is the 5.9 m bedroom wing. The plan's widths and the elevation's gable sizes agree once mirrored, and the cluster places mirrored copies anyway. **The plan is followed; the elevation supplies the opening styles.**
+- **Windows** **[read]**: dark timber frame, a glazed casement with 2 × 3 panes, and solid timber shutters folded flat against the wall. Openings are about 1.0–1.3 m wide, sill at +1.5 **[stated level]**, head about +2.7.
+- **Doors** **[read]**: dark timber panel doors about 0.9 m wide. The living room's front door is a double door about 1.4 m wide.
+- **Courtyard side of the living room** **[read]**, from the render: a wall-wide frame of louvred timber leaves that fold open, with a louvred transom.
+- **Verandah posts** **[read]**: turned timber posts on dark bases with brass rings and a bracketed capital, carrying a beam at the eave.
+- **Eaves and barges** **[read]**: carved timber fretwork valances along every eave and gable barge, with exposed rafters under the overhang.
+- **Kitchen** **[stated]**: a terracotta jali to the cooking space. The render shows it as a deep square-cell jali over the upper half of a white wall.
+- **Plinth** **[read]**: white-plastered, 0.6 m, with broad steps of 4 risers to the front verandah and small flights into the courtyard.
+- **Floors** **[stated]**: mud flooring, reddish brown in the interior render.
+- **Not in the PDF, so assumed or omitted:** gutters and downpipes (none in any render, so omitted), any chimney (the chul vents through the jali), a water tank and a solar panel (not shown, so not added), the boundary wall and gate details, and the plot planting.
+
+### 7.4 Is the plan realistic?
+
+Building all 30 types to this level is not realistic from this PDF. **Only Irshalpada types A and B, and the Irshalpada school, have the plans, elevations, sections and renders that an architectural-model-quality building needs.**
+
+| Group | Types | What the PDF has | Recommended treatment |
+|---|---|---|---|
+| Has the drawings | Irshalpada type A, type B, school | Plan, roof plan, sections, elevation, renders | **Full detail**, as in the brief |
+| Partial drawings | Residential school: academic, admin, library, sports, mess. Sukoon: villa, guest rooms, hall | Plans and renders at 72 ppi, with heights mostly illegible | A **detailed massing tier**: real openings, roofs and materials at the fidelity the sheets support, with every dimension tagged |
+| No drawings | School hostels, staff houses, auditorium. Sukoon suites, dorms, spa, gym. Mass-housing podiums. Irshalpada temple | Nothing beyond the plan footprint or one render | **Do not detail.** Inspect shows the plan massing with a note that no drawings exist. |
+| Too large for the stage | Mass-housing towers (about 145 m), Dharavi towers | The section and the floor plate | Detail **one typical floor plate** and the crown, not the whole tower |
+
+The first type built end to end is **type A**, which has the richest set of sheets. **The work then stops for review**, as the brief asks.

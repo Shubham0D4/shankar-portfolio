@@ -93,7 +93,8 @@ export function createInspectController(story: HTMLElement, still: boolean): Ins
     const r = refs.find((x) => x.id === id);
     if (!model || !r || busy || session) return;
     busy = true;
-    returnFocus = from ?? (document.activeElement as HTMLElement | null);
+    const active = document.activeElement as HTMLElement | null;
+    returnFocus = from ?? (active && active !== document.body ? active : stage);
     const m = model;
     const at = m.previewBuilding(id);
     if (at) {
@@ -168,6 +169,7 @@ export function createInspectController(story: HTMLElement, still: boolean): Ins
       refs = model.buildings();
       if (import.meta.env.DEV) Object.assign(window, { __plan: model, __inspect: { enter, exit, active: () => !!session } });
       stage.append(dim);
+      stage.tabIndex = -1;
       figure.append(status);
       if (!nav) buildNav();
       model.onSelect = (id) => {

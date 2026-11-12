@@ -13,7 +13,7 @@
  *    a bicycle and the people are built per house from its plot number, so
  *    the 22 houses of this type differ in small ways.
  */
-import { Color, Group, Matrix4, Mesh, MeshBasicMaterial, BackSide, PointLight, Vector3, type BufferGeometry, type Material, type MeshStandardMaterial } from 'three';
+import { Color, Group, Matrix4, Mesh, MeshBasicMaterial, BackSide, Vector3, type BufferGeometry, type Material, type MeshStandardMaterial } from 'three';
 import { HOUSE_G } from '../../models/irshalpada.data';
 import { Bag, box, faceTo, floorPoly, lathe, member, norm, paintGeo, prismTop, quad, rod, solid, sphere, type V2, type V3 } from '../kit';
 import { bicycle, clump, laundry, person, pot, seeded, tree, tulsi, woodpile, type PersonSpec } from '../props';
@@ -853,12 +853,7 @@ export const module: TypeModule = {
     group.add(people);
 
     // Warm interior lights for dusk: living room, kitchen, bedroom.
-    const lamps = ([[3.5, 2.6, 8.0], [5.5, 2.3, 2.8], [14.8, 2.5, 7.2]] as V3[]).map(([x, y, z]) => {
-      const l = new PointLight(0xffb066, 0, 9, 1.6);
-      l.position.set(x, y, z);
-      group.add(l);
-      return l;
-    });
+    const lamps: V3[] = [[3.5, 2.6, 8.0], [5.5, 2.3, 2.8], [14.8, 2.5, 7.2]];
 
     const callouts: Callout[] = [
       { at: [3.7, 4.9, 9.0], facing: [0, 1, 0.4], onRoof: true, title: 'Mangalore tile roof', detail: 'Ridge +5.90 m, eaves +3.10 m', source: 'pdf' },
@@ -901,7 +896,6 @@ export const module: TypeModule = {
       dispose() {
         own.forEach((g) => g.dispose());
         pocheMat.dispose();
-        lamps.forEach((l) => l.dispose());
       },
     };
   },

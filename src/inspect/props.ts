@@ -168,11 +168,11 @@ export function tree(t: TreeSpec, foliage: Bag, bark: Bag): void {
     const d = Math.sqrt(r()) * t.spread * 0.42;
     const cy = y + t.height * (0.62 + r() * 0.3);
     const rad = t.spread * (0.22 + r() * 0.14);
-    const g = new IcosahedronGeometry(rad, 1);
+    const g = new IcosahedronGeometry(rad, 2);
     // Organic: jitter the vertices.
     const p = g.getAttribute('position');
     for (let k = 0; k < p.count; k++) {
-      const s = 1 + (r() - 0.5) * 0.28;
+      const s = 1 + (r() - 0.5) * 0.14;
       p.setXYZ(k, p.getX(k) * s, p.getY(k) * s * 0.82, p.getZ(k) * s);
     }
     g.translate(x + Math.cos(a) * d, cy, z + Math.sin(a) * d);

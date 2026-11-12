@@ -26,6 +26,7 @@ import {
   PerspectiveCamera,
   Plane,
   PlaneGeometry,
+  PointLight,
   PMREMGenerator,
   Raycaster,
   Scene,
@@ -105,6 +106,8 @@ interface Stage {
   hills: Mesh;
   mats: MaterialSet;
   plane: Plane;
+  /** Interior lamps, kept for the page so the renderer's light caches do not grow per visit. */
+  lamps: PointLight[];
 }
 
 let stage: Stage | null = null;
@@ -191,7 +194,12 @@ function getStage(): Stage {
   scene.add(hills);
 
   const plane = new Plane(new Vector3(0, 0, -1), 1e4);
-  stage = { tier, renderer, scene, camera, sun, hemi, env, ground, hills, mats, plane };
+  const lamps = [0, 1, 2].map(() => {
+    const l = new PointLight(0xffb066, 0, 9, 1.6);
+    scene.add(l);
+    return l;
+  });
+  stage = { tier, renderer, scene, camera, sun, hemi, env, ground, hills, mats, plane, lamps };
   addEventListener('pagehide', releaseStage, { once: true });
   return stage;
 }
@@ -245,7 +253,11 @@ export async function openInspect(o: InspectOptions): Promise<InspectSession> {
   const leaders = svg('svg', { class: 'inspect__leaders', 'aria-hidden': 'true' });
   const labels = el('ul', 'inspect__callouts');
   labels.setAttribute('aria-label', 'Details on the model');
-  const hint = el('p', 'inspect__hint label', 'Drag to turn. Scroll or pinch to zoom. Right-drag or two fingers to pan. Arrow keys turn, + and − zoom.');
+  const hint = el(
+    'p',
+    'inspect__hint label',
+    matchMedia('(pointer: coarse)').matches ? 'Drag to turn. Pinch to zoom. Two fingers to pan.' : 'Drag to turn. Scroll to zoom. Right-drag to pan. Arrow keys turn, + and − zoom.',
+  );
   stageEl.append(renderer.domElement, leaders, labels, hint);
 
   const panel = el('aside', 'inspect__panel');
@@ -263,7 +275,8 @@ export async function openInspect(o: InspectOptions): Promise<InspectSession> {
   const count = el('span', 'label inspect__count');
   nav.append(prev, count, next);
   const head = el('div', 'inspect__head');
-  head.append(back, where, title, nav);
+  const notice = el('p', 'inspect__notice label', 'Massing only: the detailed model of this type is not built yet.');
+  head.append(back, where, title, notice, nav);
 
   const controls = el('div', 'inspect__controls');
   controls.setAttribute('role', 'group');
@@ -392,6 +405,7 @@ export async function openInspect(o: InspectOptions): Promise<InspectSession> {
     title.textContent = r.house >= 0 ? `${TYPE_NAMES[r.typeId]}, type ${r.kind.toUpperCase()}` : r.label;
     const i = o.all.indexOf(o.all.find((x) => x.id === r.id)!);
     count.textContent = `${i + 1} of ${o.all.length}`;
+    notice.hidden = inst.detailed;
     notes.replaceChildren(...inst.notes.map((n) => el('p', undefined, n)));
     buildLabels();
     drawPlan(inst.plan);
@@ -466,7 +480,7 @@ export async function openInspect(o: InspectOptions): Promise<InspectSession> {
       })
       .filter((x): x is NonNullable<typeof x> => !!x)
       .sort((a, b) => a.d - b.d)
-      .slice(0, W < 700 ? 5 : 9);
+      .slice(0, W < 560 ? 3 : W < 900 ? 5 : 9);
     const shown = new Set(vis.map((v) => v.it));
     for (const it of items) {
       if (!shown.has(it)) {
@@ -577,7 +591,12 @@ export async function openInspect(o: InspectOptions): Promise<InspectSession> {
     renderer.toneMappingExposure = lerp(1.0, 1.05, k);
     if (inst) {
       for (const g of inst.glass) g.emissiveIntensity = k * 3.2;
-      for (const l of inst.lamps) l.intensity = k * 32;
+      inst.group.updateWorldMatrix(true, false);
+      S.lamps.forEach((l, i) => {
+        const at = inst!.lamps[i];
+        if (at) l.position.set(...at).applyMatrix4(inst!.group.matrixWorld);
+        l.intensity = at ? k * 32 : 0;
+      });
     }
     dlg.classList.toggle('is-dusk', k > 0.5);
   };
@@ -613,6 +632,7 @@ export async function openInspect(o: InspectOptions): Promise<InspectSession> {
   /* Frame */
   const startDist = 52;
   let endDist = 30;
+  const glide = { azS: 0, elS: 0.5, azE: 0, elE: 0.4 };
   const tick = (t: number) => {
     raf = 0;
     const dt = last ? Math.min(0.3, (t - last) / 1000) : 0.016;
@@ -625,8 +645,12 @@ export async function openInspect(o: InspectOptions): Promise<InspectSession> {
       holder.position.y = -1.8 * (1 - e);
       // The camera glides in on the way in; on the way out the building sinks.
       if (enterTo === 1) {
-        const dir = camera.position.clone().sub(orbit.target).normalize();
-        camera.position.copy(orbit.target).addScaledVector(dir, lerp(startDist, endDist, ease(enter)));
+        // Orbit from the plan camera's direction round to a three-quarter front view.
+        const az = glide.azS + (glide.azE - glide.azS) * e;
+        const el = lerp(glide.elS, glide.elE, e);
+        const d = lerp(startDist, endDist, e);
+        camera.position.set(orbit.target.x + Math.sin(az) * Math.cos(el) * d, orbit.target.y + Math.sin(el) * d, orbit.target.z - Math.cos(az) * Math.cos(el) * d);
+        camera.lookAt(orbit.target);
       }
       anim = true;
       if (enter === enterTo && enterTo === 0) leaving?.();
@@ -746,9 +770,20 @@ export async function openInspect(o: InspectOptions): Promise<InspectSession> {
   const elv = clamp(o.view.el, 16, 40) * DEG;
   endDist = clamp(inst!.radius * 2.6, 16, 52);
   orbit.target.set(0, inst!.focus[1], 0);
-  const dir = new Vector3(s * Math.sin(az) * Math.cos(elv), Math.sin(elv), -Math.cos(az) * Math.cos(elv));
-  camera.position.copy(orbit.target).addScaledVector(dir, still ? endDist : startDist);
+  // Stage azimuth of the plan camera (mirrored houses flip x), then the nearest three-quarter front.
+  let azS = Math.atan2(s * Math.sin(az), Math.cos(az));
+  const fronts = [150 * DEG, 210 * DEG];
+  const wrap = (a: number) => Math.atan2(Math.sin(a), Math.cos(a));
+  let azE = fronts.reduce((best, f) => (Math.abs(wrap(f - azS)) < Math.abs(wrap(best - azS)) ? f : best), fronts[0]);
+  azE = azS + wrap(azE - azS);
+  if (!inst!.detailed) azE = azS; // massing views keep the plan's direction
+  Object.assign(glide, { azS, elS: elv, azE, elE: 24 * DEG });
+  const at = still ? azE : azS;
+  const atEl = still ? glide.elE : elv;
+  const d0 = still ? endDist : startDist;
+  camera.position.set(Math.sin(at) * Math.cos(atEl) * d0, orbit.target.y + Math.sin(atEl) * d0, -Math.cos(at) * Math.cos(atEl) * d0);
   camera.lookAt(orbit.target);
+  void azS;
   if (still) {
     enter = 1;
     holder.position.y = 0;
@@ -787,12 +822,15 @@ export async function openInspect(o: InspectOptions): Promise<InspectSession> {
           orbit.dispose();
           cv.removeEventListener('pointerdown', onDown);
           cv.removeEventListener('pointerup', onUp);
+          S.lamps.forEach((l) => (l.intensity = 0));
           if (inst) {
             pivot.remove(inst.group);
             inst.dispose();
             inst = null;
           }
           scene.remove(holder);
+          // The renderer's cached render list still points at the last frame's meshes.
+          renderer.renderLists.dispose();
           for (const p of [plane]) p.constant = 1e4;
           if (dlg.open) dlg.close();
           dlg.remove();

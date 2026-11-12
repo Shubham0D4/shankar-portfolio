@@ -1,5 +1,5 @@
 /** Contract between the inspect stage and the building-type modules. */
-import type { Group, Material, Mesh, MeshStandardMaterial, Object3D, PointLight } from 'three';
+import type { Group, Material, Mesh, MeshStandardMaterial, Object3D } from 'three';
 import type { MaterialSet, Tier } from './tex';
 import type { V2 } from './kit';
 
@@ -56,8 +56,8 @@ export interface BuildingInstance {
   clipped: Material[];
   /** Glass that glows at dusk. */
   glass: MeshStandardMaterial[];
-  /** Warm interior lights, off by day. */
-  lamps: PointLight[];
+  /** Warm interior lamp positions (local frame), lit at dusk by the stage's lights. */
+  lamps: [number, number, number][];
   people: Object3D;
   callouts: Callout[];
   plan: PlanSheet;

@@ -672,3 +672,184 @@ Building all 30 types to this level is not realistic from this PDF. **Only Irsha
 | Too large for the stage | Mass-housing towers (about 145 m), Dharavi towers | The section and the floor plate | Detail **one typical floor plate** and the crown, not the whole tower |
 
 The first type built end to end is **type A**, which has the richest set of sheets. **The work then stops for review**, as the brief asks.
+
+### 7.5 How it is built
+
+| Part | Where | Notes |
+|---|---|---|
+| Registry | `src/inspect/registry.ts` | Pure data. Every building has an id, a type and a label. |
+| Placement | `src/models/irshalpada.place.ts` | House-local to world matrices, the same chain `buildCluster()` applies. Also picks the house from a cluster hit. |
+| Plan side | `src/models/irshalpada.ts`, `src/inspect/controller.ts` | Covers hover, select, the camera glide, pause, the dim, keyboard access and the URL. With nothing hovered, nothing extra is drawn. |
+| Stage | `src/inspect/inspect.ts` | Its own renderer and scene, rendered on demand. Controls: orbit, day and dusk, people, labels, roof lift, section cut, plan inset, and previous and next. |
+| Detailed type | `src/inspect/buildings/irshalpada-house-a.ts` | Type A. The fixed fabric is cached per device tier. Leaves, planting and people vary with the plot number. |
+| Fallback | `src/inspect/buildings/massing.ts` | Any type without a detailed module shows the plan model's own massing, labelled "Massing only". |
+| Materials | `src/inspect/tex.ts` | Procedural PBR, built from tileable height fields: colour, normal, and packed AO, roughness and metalness. Capped at 512 px (256 on the low tier). |
+| Props | `src/inspect/props.ts` | People, trees, plants, laundry, bicycle, firewood, pots and the tulsi vrindavan. Low-poly and vertex-coloured. |
+
+- **Lifetime.** The renderer, ground, lamps and material set are created on the first visit and kept for the page. Each visit's building instance, props, controls, listeners and DOM are disposed on exit. Everything is released on `pagehide`.
+  - Why keep them: three.js leaves listeners on geometries for each renderer that has drawn them. A fresh renderer on every visit would leak.
+- **Device tier.** The low tier applies to coarse pointers, `deviceMemory` ≤ 4 or ≤ 4 cores. It halves texture sizes, uses a 1024 shadow map, caps the pixel ratio at 1.25 instead of 2, uses no MSAA and a coarser ground mesh. `?tier=low` or `?tier=high` forces either one.
+- **Reduced motion.** With `prefers-reduced-motion`, there is no glide, rise, fade or damping. Roof lift and dusk switch instantly.
+
+### 7.6 Type A: readings and assumptions beyond §7.3
+
+| Item | Value | Basis |
+|---|---|---|
+| Plinth, eaves, ridge | +0.60, +3.10, +5.90 | **[stated]** |
+| Window sill | +1.50 | **[stated]**, the +1500 level on the sections |
+| Window head | +2.65 | [read] from the elevation |
+| Door head | +2.70 | [read] |
+| Bedroom wing ridge | +5.40 | [read]. The same value as the plan model's data. The sections give only +5900. |
+| Rooms, doors, windows | As listed in `WALLS` | [read] off the p41 plan at about 40 px/m on the crop, ±0.3 m |
+| Wall thickness | 0.23 m | [assumed] |
+| Roof build-up over the wall plate | 0.16 m | [assumed] |
+| Step risers | 3 × 0.20 m | [assumed]. The plan's hatching gives the flights only. |
+| Front steps | Moved outside a shortened verandah plinth (13.6 m deep), total depth 14.3 m | Plan: 14.4 m. Changed so the gable stands on its posts. |
+| Roof wing extents | Trimmed so every gable stands on a wall or a post line and every eave is 0.6 m beyond its bearing line | They differ from the plan model's data by up to 1 m at the wing ends. The roof plan is not dimensioned. |
+| Chul bay | Its own lean-to, falling outwards | [read] from the jali render |
+| Posts | Positions from the plan circles, plus side and corner posts where an eave needs carrying | [read] / [assumed] |
+| Post bases | Basalt | [assumed]: the local Deccan stone |
+| Jali screen by the WC | Freestanding, 2 m | [read] from the plan hatching. Its purpose is [assumed]. |
+| Second bedroom: courtyard window | Added | [assumed], from the brief that every room opens to the courtyard |
+| Furniture and lamps | Chul platform, shelf, diwan, cots, cupboard, bucket, pan | [assumed] |
+| Plot | Compound wall 1.2 m, plastered, basalt coping; gate on the steps' axis; basalt path | [assumed] |
+| Planting | Courtyard tree **[stated]**. Back-yard trees [read] from the plan symbols. Front tree, kitchen garden and tulsi vrindavan [assumed]. | |
+| Everyday life | Laundry line [read] from the p38 photos of the old village. Firewood, pots and bicycle [assumed]. | |
+| Gutters, downpipes, tank, solar | **None.** None appear in any drawing or render, and the eaves throw rain clear of the plinth. | Matches the PDF |
+
+### 7.7 Performance
+
+All figures are from headless Chrome with software WebGL (SwiftShader) at 1440 × 900. Frame times are therefore CPU-bound and only comparable with each other.
+
+**Main scene, nothing selected** (`dev/model.html?model=irshalpada`, fixed camera; before = commit c2eb1fa, after = HEAD):
+
+| Story position | Draw calls | Triangles | Geometries | Programs | CPU submit per frame |
+|---|---|---|---|---|---|
+| p = 0.2, before | 33 | 31,372 | 15 | 16 | 0.6–0.9 ms |
+| p = 0.2, after | 33 | 31,372 | 15 | 16 | 0.3–0.4 ms |
+| p = 1, before | 41 | 75,116 | 19 | 19 | 0.6 ms |
+| p = 1, after | 41 | 75,116 | 19 | 19 | 0.5 ms |
+
+- **The plan scene is unchanged.** Its hover shell is two meshes with no geometry until something is hovered.
+- **While inspecting, the plan scene does not render at all.**
+
+**Inspect stage, per type:**
+
+| Type | Tier | Draw calls | Triangles | Texture memory (estimate) |
+|---|---|---|---|---|
+| A, detailed | high | 50 | 82,900 | 14.2 MB materials + 16 MB shadow map |
+| A, detailed | low | 50 | 65,900 | 3.6 MB materials + 4 MB shadow map |
+| B, massing | high / low | 15 | 26,200 / 9,200 | Ground textures only |
+| School, massing | high / low | 11 | 26,800 / 9,800 | Ground textures only |
+| Temple, massing | high / low | 7 | 24,800 / 7,800 | Ground textures only |
+
+- The stage ground accounts for 24,000 triangles on the high tier and 7,000 on the low tier.
+- The stage renders only when something changes: an orbit, a toggle or a transition. A still view costs nothing.
+- **Bundles**, loaded on the first selection only (gzipped):
+
+| Chunk | Size |
+|---|---|
+| Stage | 16.9 KB |
+| Type A | 10.6 KB |
+| Fallback | 1.5 KB |
+
+### 7.8 Verification
+
+The scripts are in `dev/inspect-checks/`: a CDP driver and its scenarios, run against `npm run dev` on port 5199.
+
+**Selection**
+
+| Check | Result |
+|---|---|
+| Hover on a type A house | The whole house is highlighted in a warm wash, with the label "House type A, plot 39 …" |
+| Click | The camera glides in and the plan dims. The URL becomes `?building=irshalpada-a-39`. |
+| Esc | Returns to the plan and restores the URL |
+| Keyboard | Tab to the third building, then Enter: opens `?building=irshalpada-a-03` |
+| Shared link | `?building=irshalpada-a-12` opens directly |
+| Empty space | A click on the plan clears the selection. A click on the stage backdrop leaves the stage. |
+
+**Repeated visits**
+
+- **Method.** Ten enter and exit cycles, alternating plots 03, 12 and 39, with the garbage collector forced before each reading.
+- **Used heap:**
+
+| Reading | Used heap |
+|---|---|
+| Before any visit | 9.35 MB |
+| After the first visit | 11.50 MB |
+| After each of the next ten visits | 11.83, 12.03, 12.01, 12.12, 12.19, 12.19, 12.29, 12.27, 12.38, 12.40 MB |
+| Continued to 25 visits | Levels off at 12.55–12.68 MB |
+
+- The first visit's 2.15 MB rise is the stage, the material set and the type cache, which are kept on purpose (§7.5).
+- **The used heap is not flat over the first ten visits:** it rises 0.57 MB, then levels off. A heap-snapshot diff between visit 6 and visit 15 explains the rise:
+  - **Application objects: +1.2 KB.** No three.js object is retained.
+  - **V8 compiled code (JIT tiering): +280 KB.**
+  - **Blink's computed-style caches: about +110 KB,** from the dim's gradient being re-keyed per building.
+  - These are browser caches, not objects the feature keeps.
+- **Two real leaks were found and fixed during testing:**
+  - The renderer's cached render list held the last instance when a close finished before its final frame. It is now cleared on exit.
+  - Each visit created new interior lights, which three.js caches by id. The lamps now live on the stage.
+- **After the run:** no inspect dialog is left in the DOM, and the stage holds only its permanent objects.
+
+**Screenshots** (in `.inspect-review/`, not committed):
+
+| View | File |
+|---|---|
+| Hover | `1-hover` |
+| Mid-transition: the glide | `2a` |
+| Mid-transition: the stage | `2b` |
+| Arrival | `3` |
+| Front | `4` |
+| Aerial | `5` |
+| Facade detail | `6` |
+| Jali detail | `6b` |
+| Roof lift | `7` |
+| Section | `8` |
+| Dusk with people | `9` |
+| Phone | `11` |
+| Fallback types | `12-*` |
+
+**Reduced motion:** the stage opens without a fade, there is no damping, and the roof lifts instantly.
+
+### 7.9 Fidelity report: house type A
+
+**Matches the PDF**
+- **Plan.** Living, kitchen, two bedrooms, the courtyard with its tree, and the toilet and bath apart on the same plinth (p41 plan and text). Doors and windows are where the plan's swings and double lines put them.
+- **Living room.** A double door between two windows on the front. Wall-wide louvred folding doors to the courtyard verandah, with a louvred transom (p41 render).
+- **Levels.** Plinth +0.60, sill +1.50, eaves +3.10, ridge +5.90, as written on the sections.
+- **Roof form.** Three gabled wings, matching the roof plan's slope arrows. The two gable ends face the front, as in the elevation. The wings meet in valleys.
+- **Materials.**
+  - White lime plaster on CSEB.
+  - Mangalore tile.
+  - Mud floor.
+  - Timber posts, doors and shutters.
+  - A terracotta jali to the chul, on a projecting bay: deep square cells over the upper half of a white wall (p41 render and text).
+- **Woodwork** (renders):
+  - Turned timber posts with brass rings, on dark bases, carrying an eave beam.
+  - Carved valances along every eave and barge.
+  - Exposed rafter tails.
+  - Casements of 2 × 3 panes with timber shutters folded back.
+  - Panelled doors.
+- **Verandahs.** One at every entrance, as the brief asks, with broad steps and courtyard steps.
+- **People** in the renders' poses: a woman at a post, an elder seated on the plinth, a woman carrying a pot on her head, and children.
+
+**Assumed** (tagged "Assumed" with a dashed leader on the model)
+- Wall thickness, step risers and roof build-up.
+- Basalt post bases.
+- Compound wall, gate and path.
+- Kitchen garden, tulsi vrindavan, front tree and bicycle.
+- Furniture and lamp positions.
+- The second bedroom's courtyard window.
+- The purpose of the jali screen by the WC.
+
+The full list is in §7.6.
+
+**Differs from the PDF** (known)
+- **Elevation.** The p41 elevation is drawn mirrored against the plan. The model follows the plan.
+- **Front steps.** They sit outside a slightly shorter verandah plinth: 14.3 m total depth against 14.4 m.
+- **Roof ends.** The wing ends are trimmed so each gable bears on a wall or posts. They differ from the site model's roofs by up to 1 m.
+- **Valance.** A generic jhalar motif (board, scallop, pendant), not the render's exact pattern.
+- **Posts.** Simplified lathe profiles, with block capitals instead of carved brackets.
+- **Louvred doors.** Six leaves, where the render suggests seven or eight.
+- **Plan scale.** ±20 %, inherited from §2. All plan sizes scale together.
+- **Interior.** Room walls run up to the roof, as in section AA′. There is no ceiling, and the furniture is massing only.

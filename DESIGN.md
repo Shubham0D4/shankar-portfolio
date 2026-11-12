@@ -152,3 +152,9 @@ Vertical rhythm between sections always uses `--space-section`. Inside component
 - **Footer, as a title block.** Ink ground, film text, gold labels. Cells for the architect, all eight projects, contact, and "This sheet", which names the current page.
 - **Buttons.** Square, 2 px ink. Solid ink for the main action, outline for the second. Hover fills gold.
 - **Model slot.** `[data-model-slot]` is a figure whose stage holds a poster that is also the no-WebGL fallback. Three.js mounts a canvas over it. The figcaption carries the content in HTML.
+- **Building inspect.** On a site model, hovering, tapping or tabbing to a building lifts it in a warm wash, with the tip giving its name and plot. Selecting it dims the plan round the building and glides in. The building then opens on a full-viewport stage: the model on the left and a title block on the right (a bottom sheet on phones), with Back, Previous and Next, the view toggles, a section-cut slider and a plan inset with a "You" marker. Callouts follow drafting convention:
+  - **Solid leader:** from the drawings.
+  - **Dashed leader and outlined tag:** assumed.
+
+  At dusk the stage backdrop turns indigo and the labels keep their film ground. Types without a detailed model carry a dashed "Massing only" notice. The model and its rules are described in MODEL_NOTES.md §7.
+

@@ -26,7 +26,7 @@ try {
     await b.waitFor('!window.__inspect.active() && !document.querySelector("dialog.inspect")', 30000);
     await b.sleep(1200);
   };
-  const ids = ['irshalpada-a-03', 'irshalpada-a-12', 'irshalpada-a-39'];
+  const ids = ['irshalpada-b-05', 'irshalpada-b-06', 'irshalpada-b-41'];
   const counts = async () => b.eval(`(() => {
     // Count live three.js objects reachable from the page via a GC-independent probe is not possible; use the heap snapshot instead.
     return 0; })()`);

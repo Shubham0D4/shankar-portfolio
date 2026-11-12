@@ -333,6 +333,40 @@ function fretwork(size: number) {
   });
 }
 
+/** Bamboo slab soffit [stated: bamboo slab]: round poles side by side with darker nodes. Repeats every 1 m. */
+function bamboo(size: number) {
+  const n = fbm(91, 4, 3);
+  const a = lin(0xc9a96a);
+  const b = lin(0x8f7442);
+  return paint(size, (u, v, o) => {
+    const poles = 14;
+    const f = (u * poles) % 1;
+    const round = Math.sin(f * Math.PI);
+    const pole = Math.floor(u * poles);
+    const node = Math.abs(((v * 3 + pole * 0.37) % 1) - 0.5) < 0.012 ? 1 : 0;
+    o.h = 0.2 + 0.7 * round - 0.2 * node;
+    mix3(a, b, (1 - round) * 0.7 + node * 0.5 + 0.15 * n(u, v), o.c);
+    o.r = 0.55;
+  });
+}
+
+/**
+ * Balcony railing [read from the p42 render]: flat pickets whose gaps close
+ * in pointed arches under a top rail. One repeat is 0.16 m wide, the rail's height tall.
+ */
+function railing(size: number) {
+  const dark = lin(0x3f2617);
+  return paint(size, (u, v, o) => {
+    const g = Math.min(u, 1 - u); // 0 at the gap's centre
+    let solid = v < 0.1 || v > 0.9 || g > 0.3; // top and bottom rails, the picket
+    if (!solid && v < 0.12 + 0.24 * Math.pow(g / 0.3, 0.6)) solid = true; // pointed arch
+    o.a = solid ? 1 : 0;
+    o.h = solid ? 0.6 : 0;
+    mix3(dark, lin(0x5c3a24), v, o.c);
+    o.r = 0.6;
+  });
+}
+
 /* ---------- Material set ---------- */
 
 export interface MaterialSet {
@@ -347,6 +381,9 @@ export interface MaterialSet {
   basalt: MeshStandardMaterial;
   clay: MeshStandardMaterial;
   fret: MeshStandardMaterial;
+  rail: MeshStandardMaterial;
+  bamboo: MeshStandardMaterial;
+  ghost: MeshStandardMaterial;
   glass: MeshStandardMaterial;
   brass: MeshStandardMaterial;
   steel: MeshStandardMaterial;
@@ -400,6 +437,8 @@ export function materials(tier: Tier): MaterialSet {
   const fretSize = tier === 'high' ? 128 : 64;
   const tF = make(fretSize, fretwork(fretSize), { bump: 3, aoStrength: 2, repeat: 1, alpha: true });
   tF.map.repeat.set(1, 1);
+  const tR = make(fretSize, railing(fretSize), { bump: 2, aoStrength: 2, repeat: 1, alpha: true });
+  const tBa = make(small, bamboo(small), { bump: 2, aoStrength: 2, repeat: 1 });
 
   const set: MaterialSet = {
     plaster: std(tP),
@@ -413,6 +452,9 @@ export function materials(tier: Tier): MaterialSet {
     basalt: std(tB),
     clay: std(tC),
     fret: std(tF, { alphaTest: 0.5, side: DoubleSide }),
+    rail: std(tR, { alphaTest: 0.5, side: DoubleSide }),
+    bamboo: std(tBa),
+    ghost: new MeshStandardMaterial({ color: 0xded8cc, roughness: 1 }),
     glass: new MeshStandardMaterial({ color: 0x1d2a2c, roughness: 0.06, metalness: 0.1, transparent: true, opacity: 0.55, emissive: new Color(0xffb35c), emissiveIntensity: 0 }),
     brass: new MeshStandardMaterial({ color: 0xc09a45, roughness: 0.32, metalness: 1 }),
     steel: new MeshStandardMaterial({ color: 0x9aa0a3, roughness: 0.35, metalness: 0.9 }),

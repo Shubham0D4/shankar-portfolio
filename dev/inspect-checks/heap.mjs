@@ -17,7 +17,7 @@ try {
   };
   const before = await b.heap();
   console.log('heap before any visit', (before / 1048576).toFixed(2), 'MB');
-  const ids = ['irshalpada-a-03', 'irshalpada-a-12', 'irshalpada-a-39'];
+  const ids = (process.env.IDS ?? 'irshalpada-a-03,irshalpada-a-12,irshalpada-a-39').split(',');
   await cycle(ids[0]);
   const warm = await b.heap();
   console.log('after 1st visit (type cache warm)', (warm / 1048576).toFixed(2), 'MB');

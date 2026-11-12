@@ -1,7 +1,7 @@
 import { launch } from './cdp.mjs';
 const b = await launch({ width: 1440, height: 900, port: 9336 });
 try {
-  for (const id of ['irshalpada-a-07', 'irshalpada-b-05', 'irshalpada-school', 'irshalpada-temple']) {
+  for (const id of (process.env.IDS ?? 'irshalpada-a-07,irshalpada-b-05,irshalpada-school,irshalpada-temple').split(',')) {
     for (const tier of ['high', 'low']) {
       await b.goto(`http://localhost:5199/work/irshalpada/?building=${id}&tier=${tier}`);
       await b.waitFor('!!window.__inspectStats && !!document.querySelector("dialog.inspect.is-open")', 120000);

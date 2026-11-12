@@ -86,7 +86,9 @@ function loadType(typeId: string): Promise<TypeModule> {
     p =
       typeId === 'irshalpada-house-a'
         ? import('./buildings/irshalpada-house-a').then((m) => m.module)
-        : import('./buildings/massing').then((m) => m.massingModule(typeId));
+        : typeId === 'irshalpada-house-b'
+          ? import('./buildings/irshalpada-house-b').then((m) => m.module)
+          : import('./buildings/massing').then((m) => m.massingModule(typeId));
     modules.set(typeId, p);
   }
   return p;
@@ -394,12 +396,12 @@ export async function openInspect(o: InspectOptions): Promise<InspectSession> {
     pivot.add(inst.group);
     for (const m of inst.clipped) m.clippingPlanes = [plane];
     for (const p of inst.poche) (p.material as Material).clippingPlanes = [plane];
-    inst.people.visible = peopleB.getAttribute('aria-pressed') === 'true';
-    const hasRoof = inst.roof.children.length > 0;
-    roofB.disabled = !hasRoof;
+    setPeople(peopleB.getAttribute('aria-pressed') === 'true');
+    roofB.disabled = !inst.layers.length;
+    roofB.textContent = inst.liftLabel[roofB.getAttribute('aria-pressed') === 'true' ? 1 : 0];
     peopleB.disabled = !inst.people.children.length;
     labelsB.disabled = !inst.callouts.length;
-    inst.roof.position.y = lift;
+    applyLift();
     // Title block.
     where.textContent = whereText(r);
     title.textContent = r.house >= 0 ? `${TYPE_NAMES[r.typeId]}, type ${r.kind.toUpperCase()}` : r.label;
@@ -445,7 +447,7 @@ export async function openInspect(o: InspectOptions): Promise<InspectSession> {
     hidden.clear();
     const r = new Raycaster();
     for (const it of items) {
-      const obj = it.c.onRoof ? inst.roof : inst.group;
+      const obj = it.c.layer !== undefined ? inst!.layers[it.c.layer].obj : inst!.group;
       const p = new Vector3(...it.c.at).applyMatrix4(obj.matrixWorld);
       const d = camera.position.distanceTo(p);
       r.set(camera.position, p.clone().sub(camera.position).normalize());
@@ -467,7 +469,7 @@ export async function openInspect(o: InspectOptions): Promise<InspectSession> {
     const vis = items
       .map((it) => {
         if (!show || !inst || hidden.has(it)) return null;
-        const obj = it.c.onRoof ? inst.roof : inst.group;
+        const obj = it.c.layer !== undefined ? inst!.layers[it.c.layer].obj : inst!.group;
         v3.set(...it.c.at).applyMatrix4(obj.matrixWorld);
         if (v3.z > plane.constant + 0.05) return null;
         if (it.c.facing) {
@@ -574,6 +576,21 @@ export async function openInspect(o: InspectOptions): Promise<InspectSession> {
     cone?.setAttribute('transform', `rotate(${(ang + 180).toFixed(1)})`);
   };
 
+  const setPeople = (v: boolean) => {
+    if (!inst) return;
+    inst.people.visible = v;
+    inst.group.traverse((o) => {
+      if (o.userData.people) o.visible = v;
+    });
+  };
+
+  /* Lift: each layer rises by k × 3.6 m. */
+  const applyLift = () => {
+    if (!inst) return;
+    const e = ease(lift);
+    for (const l of inst.layers) l.obj.position.y = e * 3.6 * l.k;
+  };
+
   /* Light */
   const applyLight = () => {
     const k = dusk;
@@ -661,8 +678,8 @@ export async function openInspect(o: InspectOptions): Promise<InspectSession> {
       anim = true;
     }
     if (lift !== liftTo && inst) {
-      lift = step(lift, liftTo, 0.8 / 3.6);
-      inst.roof.position.y = ease(lift / 3.6) * 3.6;
+      lift = step(lift, liftTo, 0.8);
+      applyLift();
       anim = true;
     }
     const moved = orbit.update();
@@ -733,7 +750,7 @@ export async function openInspect(o: InspectOptions): Promise<InspectSession> {
   peopleB.addEventListener('click', () => {
     const v = peopleB.getAttribute('aria-pressed') !== 'true';
     press(peopleB, v);
-    if (inst) inst.people.visible = v;
+    if (inst) setPeople(v);
     invalidate();
   });
   labelsB.addEventListener('click', () => {
@@ -743,8 +760,8 @@ export async function openInspect(o: InspectOptions): Promise<InspectSession> {
   roofB.addEventListener('click', () => {
     const v = roofB.getAttribute('aria-pressed') !== 'true';
     press(roofB, v);
-    roofB.textContent = v ? 'Lower the roof' : 'Lift the roof';
-    liftTo = v ? 3.6 : 0;
+    roofB.textContent = inst?.liftLabel[v ? 1 : 0] ?? '';
+    liftTo = v ? 1 : 0;
     invalidate();
   });
   slider.addEventListener('input', () => {

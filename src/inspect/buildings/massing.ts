@@ -99,7 +99,8 @@ export function massingModule(typeId: string): TypeModule {
       void ctx;
       return {
         group,
-        roof,
+        layers: [{ obj: roof, k: 1 }],
+        liftLabel: ['Lift the roof', 'Lower the roof'],
         poche,
         clipped,
         glass: [],

@@ -8,8 +8,8 @@ export interface Callout {
   at: [number, number, number];
   /** Outward direction of the surface, so labels hide when it faces away. */
   facing?: [number, number, number];
-  /** Moves with the roof when it lifts. */
-  onRoof?: boolean;
+  /** Index of the lifting layer it moves with (see BuildingInstance.layers). */
+  layer?: number;
   title: string;
   detail: string;
   /** Where the fact comes from: the PDF's drawings, or an assumption. */
@@ -48,8 +48,10 @@ export interface BuildContext {
 export interface BuildingInstance {
   /** Building plus plot, in local metres; the stage centres and mirrors it. */
   group: Group;
-  /** Lifts to reveal the interior. */
-  roof: Object3D;
+  /** Parts that lift apart to reveal the interior: each rises by k × 3.6 m. */
+  layers: { obj: Object3D; k: number }[];
+  /** Button labels for lifting and lowering. */
+  liftLabel: [string, string];
   /** Back-face twins of the closed solids: the poché of the section cut. */
   poche: Mesh[];
   /** Materials the section plane clips. */

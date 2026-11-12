@@ -41,7 +41,7 @@ export const TYPE_NAMES: Record<string, string> = {
 };
 
 /** Types with a detailed module in src/inspect/buildings. */
-export const DETAILED_TYPES = new Set(['irshalpada-house-a']);
+export const DETAILED_TYPES = new Set(['irshalpada-house-a', 'irshalpada-house-b']);
 
 const pad = (n: number) => String(n).padStart(2, '0');
 

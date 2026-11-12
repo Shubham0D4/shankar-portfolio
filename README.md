@@ -5,9 +5,9 @@ A portfolio website for Shankar Wagh, built from the 50-page A3 print portfolio 
 ## Stack
 
 - [Vite](https://vite.dev) and TypeScript (multi-page, no framework)
-- [Three.js](https://threejs.org) for the procedural project models
-- [GSAP](https://gsap.com) for motion
-- Anek Latin variable font via Fontsource
+- [Three.js](https://threejs.org) for the procedural project models and the home hero's instrument still life
+- Bodoni Moda and Anek Latin variable fonts via Fontsource
+- sharp (dev only) to write the hero's still image
 
 ## Getting started
 
@@ -35,10 +35,11 @@ src/
   data/site.ts        Site-level data
   models/             One procedural model per project (<slug>.ts + <slug>.data.ts)
   pages/              Page controllers: home, work, project, contact
-  shell/              Nav, motion, shared partials, home formation block
-  styles/             tokens, base, shell and page CSS
-  three/              Shared renderer rig and slot helpers
-dev/                  Standalone model viewer (dev/model.html)
+  shell/              Nav, reveal, motion, shared partials
+  hero/               The home hero's drafting-instruments scene
+  styles/             tokens, base, shell, home and page CSS
+  three/              Shared renderer rig, slot helpers and the 3D theme
+dev/                  Standalone model viewer (dev/model.html); hero-still.mjs renders the hero's still image
 about/ contact/ technical/ work/   HTML entry points
 ```
 

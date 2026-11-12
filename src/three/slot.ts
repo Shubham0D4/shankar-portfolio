@@ -17,23 +17,6 @@ export interface SceneHandle {
 
 export type SceneLoader = (canvas: HTMLCanvasElement) => Promise<SceneHandle>;
 
-/** Shared scroll progress for the home formation (0 solid, 1 courtyard). */
-export const formationProgress = (() => {
-  let value = 0;
-  const listeners = new Set<(v: number) => void>();
-  return {
-    get: () => value,
-    set(v: number) {
-      value = v;
-      listeners.forEach((fn) => fn(v));
-    },
-    subscribe(fn: (v: number) => void) {
-      listeners.add(fn);
-      return () => listeners.delete(fn);
-    },
-  };
-})();
-
 export function hasWebGL(): boolean {
   try {
     const c = document.createElement('canvas');

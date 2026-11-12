@@ -15,7 +15,6 @@ import {
   projects,
   type ProjectCard,
 } from '../data/site.ts';
-import { formationSvg } from './formation.ts';
 import * as school from '../models/residential-school.data.ts';
 import * as irshal from '../models/irshalpada.data.ts';
 import * as mass from '../models/mass-housing.data.ts';
@@ -182,8 +181,9 @@ function header(route: string): string {
       return `<li><a href="${c.href}"${current}><span class="menu__thumb"><img src="${c.cover}" alt="" loading="lazy" decoding="async"${coverStyle(c)}></span><span class="menu__name">${esc(c.title)}</span><span class="menu__meta">${esc(c.term)}</span></a></li>`;
     })
     .join('');
+  const tone = route === '/' ? ' data-tone="dark"' : '';
   return `<a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header">
+<header class="site-header"${tone}>
   <div class="frame site-header__inner">
     <a class="wordmark" href="/"${homeCurrent}>Shankar Wagh</a>
     <nav class="site-nav" aria-label="Primary">
@@ -192,7 +192,7 @@ function header(route: string): string {
     </nav>
   </div>
 </header>
-<div class="menu" id="site-menu" hidden>
+<div class="menu" id="site-menu" data-tone="dark" hidden>
   <div class="frame menu__inner">
     <nav aria-label="Pages"><ul class="menu__pages" role="list">${menuPages}</ul></nav>
     <nav class="menu__projects" aria-label="Projects">
@@ -213,7 +213,7 @@ function footer(route: string): string {
   const linkedin = contact.linkedin_url
     ? `<a href="${esc(contact.linkedin_url)}">LinkedIn</a>`
     : `<span>LinkedIn: ${esc(contact.linkedin_label)}</span>`;
-  return `<footer class="site-footer">
+  return `<footer class="site-footer" data-tone="dark">
   <div class="frame title-block">
     <div class="tb-cell tb-cell--architect">
       <p class="label">Architect</p>
@@ -236,7 +236,19 @@ function footer(route: string): string {
       <p class="tb-note">Undergraduate selected works. Models are interpretive massing, traced from the portfolio sheets.</p>
     </div>
   </div>
+  <div class="frame tb-base">
+    <p>Shankar Wagh, architecture portfolio</p>
+    ${scaleBar()}
+  </div>
 </footer>`;
+}
+
+/** A 0–10 m scale bar in five 2 m bays: alternating bays, figures under the ticks. Decorative. */
+export function scaleBar(): string {
+  return `<div class="scale-bar" aria-hidden="true">
+    <div class="scale-bar__bays"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="scale-bar__figs"><span>0</span><span>5</span><span>10 m</span></div>
+  </div>`;
 }
 
 function coverStyle(c: ProjectCard): string {
@@ -269,16 +281,25 @@ function cardsAll(): string {
 </div>`;
 }
 
+/** "Plate 09": the project's first page in the printed portfolio. */
+export function plate(slug: string): string {
+  const pages = projects.find((x) => x.slug === slug)?.pdf_pages ?? [];
+  return pages.length ? `Plate ${String(Math.min(...pages)).padStart(2, '0')}` : '';
+}
+
 /** Home: three projects as wide alternating rows. */
 function cardsFeatured(): string {
   return FEATURED.map((slug) => cards.find((c) => c.slug === slug)!)
     .map((c, i) => {
       const p = projects.find((x) => x.slug === c.slug)!;
       const line = p.description.split(/(?<=\.)\s+(?=[A-Z])/)[0];
-      return `<article class="feature${i % 2 ? ' feature--flip' : ''}">
-  <a class="feature__frame" href="${c.href}" tabindex="-1" aria-hidden="true"><img src="${c.cover}" alt="" loading="lazy" decoding="async"${coverStyle(c)}></a>
+      return `<article class="feature${i % 2 ? ' feature--flip' : ''}" data-reveal>
+  <a class="feature__frame" href="${c.href}" tabindex="-1" aria-hidden="true">
+    <img src="${c.cover}" alt="" loading="lazy" decoding="async"${coverStyle(c)}>
+    <span class="plate feature__plate">${plate(c.slug)}</span>
+  </a>
   <div class="feature__text">
-    <p class="label feature__sheets">${esc(sheetRange(c.slug))}</p>
+    <p class="feature__index label">${i + 1} of ${FEATURED.length}</p>
     <h3 class="feature__title"><a href="${c.href}">${esc(c.title)}</a></h3>
     <p class="feature__meta">${esc(c.term)}${c.place ? `, ${esc(c.place)}` : ''}</p>
     <p class="feature__line">${esc(line)}</p>
@@ -328,17 +349,67 @@ function about(): string {
 </div>`;
 }
 
-/** Favicon: the formation diagram in plan, three by three around a green court. */
+/** Favicon: a brass compass on espresso, legs open. */
 const FAVICON = `data:image/svg+xml,${encodeURIComponent(
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="#f4efe6"/>${[0, 1, 2]
-    .flatMap((i) => [0, 1, 2].map((j) => ({ i, j })))
-    .map(({ i, j }) =>
-      i === 1 && j === 1
-        ? `<rect x="12" y="12" width="8" height="8" fill="#7d8b6a"/>`
-        : `<rect x="${3 + i * 9}" y="${3 + j * 9}" width="8" height="8" fill="#2a2724"/>`,
-    )
-    .join('')}</svg>`,
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#1e1611"/><g fill="none" stroke="#c9a46b" stroke-width="2.2" stroke-linecap="round"><path d="M16 5v3M16 8l-6 18M16 8l6 18"/><circle cx="16" cy="8" r="1.6" fill="#c9a46b" stroke="none"/></g></svg>`,
 )}`;
+
+/**
+ * Home only: decide before first paint whether the live instrument scene will
+ * load. Software WebGL (SwiftShader, llvmpipe) counts as no GPU; `?scene`
+ * overrides that for testing, `?still` forces the still image. If it will, the still image waits hidden so the scene can fade up from
+ * the dark ground; otherwise the still image shows at once (DESIGN.md §8).
+ */
+const HERO_GATE = `<script>(function(){try{var n=navigator,c=n.connection,q=new URLSearchParams(location.search);if(q.has('still'))return;if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;if(c&&c.saveData)return;if(n.deviceMemory&&n.deviceMemory<=2)return;var g=document.createElement('canvas');var x=g.getContext('webgl2')||g.getContext('webgl');if(!x)return;var d=x.getExtension('WEBGL_debug_renderer_info'),r=d?String(x.getParameter(d.UNMASKED_RENDERER_WEBGL)):'';var l=x.getExtension('WEBGL_lose_context');l&&l.loseContext();if(/swiftshader|llvmpipe|softpipe|software|basic render/i.test(r)&&!q.has('scene'))return;document.documentElement.classList.add('hero-3d')}catch(e){}})()</script>`;
+
+/** Hero still image sizes (DESIGN.md §8). Rendered from the live scene by dev/hero-still.mjs. */
+export const HERO_STILL = {
+  wide: { ratio: [5, 4], widths: [960, 1440, 1920] },
+  tall: { ratio: [4, 5], widths: [480, 800, 1080] },
+} as const;
+
+function heroStill(): string {
+  const set = (kind: 'wide' | 'tall', ext: string) =>
+    HERO_STILL[kind].widths.map((w) => `/assets/hero/instruments-${kind}-${w}.${ext} ${w}w`).join(', ');
+  const alt =
+    'A still life of drafting instruments on a sheet of vellum on a walnut desk: a brass compass standing on its point beside the arc it has drawn, a triangular scale rule, a smoked set square, a mechanical pencil and a rolled drawing.';
+  const sources = (['avif', 'webp'] as const)
+    .map(
+      (ext) =>
+        `<source type="image/${ext}" media="(min-width: 64em)" srcset="${set('wide', ext)}" sizes="66vw">
+        <source type="image/${ext}" srcset="${set('tall', ext)}" sizes="100vw">`,
+    )
+    .join('\n        ');
+  return `<picture class="hero__still">
+        ${sources}
+        <source media="(min-width: 64em)" srcset="${set('wide', 'jpg')}" sizes="66vw">
+        <img src="/assets/hero/instruments-tall-800.jpg" srcset="${set('tall', 'jpg')}" sizes="100vw" width="${HERO_STILL.tall.widths[1]}" height="${(HERO_STILL.tall.widths[1] * 5) / 4}" alt="${alt}" decoding="async" fetchpriority="high">
+      </picture>`;
+}
+
+/**
+ * The curved divider where the dark hero meets the vellum sheet: a shallow
+ * compass arc with brass ticks along it. The x axis stretches with the
+ * viewport; ticks stay vertical, so nothing distorts.
+ */
+function heroArc(): string {
+  const W = 1440;
+  const H = 72;
+  const edge = 56; // y at both ends
+  const crown = 8; // control point y
+  const y = (t: number) => (1 - t) ** 2 * edge + 2 * t * (1 - t) * crown + t ** 2 * edge;
+  const ticks: string[] = [];
+  for (let i = 1; i < 48; i++) {
+    const t = i / 48;
+    const len = i % 6 === 0 ? 10 : 5;
+    const yy = y(t) - 6;
+    ticks.push(`M${(t * W).toFixed(1)} ${yy.toFixed(1)}v${-len}`);
+  }
+  return `<svg class="hero__arc" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <path class="hero__arc-sheet" d="M0 ${H}V${edge}Q${W / 2} ${crown} ${W} ${edge}V${H}Z"/>
+      <path class="hero__arc-ticks" d="${ticks.join('')}"/>
+    </svg>`;
+}
 
 const DESCRIPTIONS: Record<string, string> = {
   Home: 'Architecture portfolio of Shankar Wagh, B.Arch student at Sir J.J. College of Architecture, Mumbai.',
@@ -357,9 +428,9 @@ function head(route: string): string {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
-<meta name="theme-color" content="#f4efe6">
+<meta name="theme-color" content="${route === '/' ? '#1e1611' : '#f2ece2'}">
 <link rel="icon" href="${FAVICON}">
-<script>document.documentElement.classList.add('js')</script>
+<script>document.documentElement.classList.add('js')</script>${route === '/' ? HERO_GATE : ''}
 <script type="module" src="/src/main.ts"></script>`;
 }
 
@@ -541,7 +612,9 @@ const PARTIALS: Record<string, (route: string) => string> = {
   technical,
   header,
   footer,
-  formation: () => formationSvg(),
+  'scale-bar': scaleBar,
+  'hero-still': heroStill,
+  'hero-arc': heroArc,
   statement: () => esc(architect.statement),
   'statement-lead': () => esc(architect.statement.split(/(?<=\.)\s/)[0]),
   'full-name': () => esc(architect.full_name),

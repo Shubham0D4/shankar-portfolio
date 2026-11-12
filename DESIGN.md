@@ -114,13 +114,17 @@ Light, with dark-leaning hero and footer. The site declares `color-scheme: light
 
 | Role | Face | Setting |
 |---|---|---|
-| Display and headings | **Bodoni Moda** (variable, optical size 6–96, weight 400–900) | Weight 450, optical size matched to size (`font-optical-sizing: auto`), leading 0.95 for display, 1.1 for headings, tracking −0.02em at display sizes. Sentence case. Roman only: no italic emphasis. |
+| Display and headings | **Bodoni Moda** (variable, optical size 6–96, weight 400–900) | Weight 450, leading 0.95 for display, 1.1 for headings, tracking −0.02em at display sizes. Sentence case. Roman only: no italic emphasis. Optical size is pinned, not automatic (see below). |
 | Text and UI | **Anek Latin** (Ek Type, Mumbai, variable) | Width 100, weight 400 for text, 520 for UI labels. Leading 1.6, measure 60–68ch. |
 | Figures and tags | Anek Latin | Width 87.5, weight 560, tabular numerals, sentence case, untracked. |
 
 Why these two. Bodoni Moda's hairline serifs and round bowls are the type version of "curvy but sharp": the same contrast as a 28 px corner meeting a 1 px rule. Its optical-size axis keeps the hairlines crisp at 140 px and sturdy at 24 px. Anek Latin is already in the project, comes from a Mumbai foundry with a Devanagari companion, and reads cleanly at text sizes; it stays as the working voice so the display face can be the only flourish.
 
-Both are self-hosted through Fontsource (`@fontsource-variable/bodoni-moda`, `@fontsource-variable/anek-latin`), Latin subset only, `font-display: swap`, and the two files used above the fold are preloaded.
+Both are self-hosted through Fontsource (`@fontsource-variable/bodoni-moda`, `@fontsource-variable/anek-latin`), split by `unicode-range` so only the Latin files download, with `font-display: swap`.
+
+**Pinned optical size.** At automatic optical sizes Bodoni's hairlines vanish at heading sizes on 1x screens: an H reads as "I I" and the em dash disappears. Optical size is therefore set by token: `--opsz-text` (11) for anything up to about 40 px, including the statement and footer; `--opsz-heading` (20) for page and section titles; `--opsz-display` (42) for the hero name only. The value is set on `body` and inherits; Anek has no optical-size axis and ignores it.
+
+**Kerning.** Bodoni Moda has no W–a kern pair, so the hero name closes it by hand (`.kern-w`).
 
 ### Scale (fluid, 360 px to 1440 px)
 
@@ -214,14 +218,14 @@ A 4 px base. Section rhythm uses `--space-section`; components use fixed steps.
 The courtyard-formation block (SVG poster, scroll choreography, step buttons, favicon motif) is removed.
 
 ### Composition
-A walnut-and-vellum desk seen from a three-quarter overhead camera (about 52° elevation, 26° field of view), lit by a warm lamp from the upper left. Five instruments, arranged on a sheet of vellum like a considered still life:
+A walnut-and-vellum desk seen from a three-quarter camera (about 37° elevation, 26° field of view), lit by a warm lamp from the upper left. Five instruments, arranged on a sheet of vellum like a considered still life:
 
 | Piece | Material | Detail |
 |---|---|---|
 | **Drafting compass** | Brushed brass body, steel needle and lead legs, knurled steel handle | The hero object. Lies on the sheet at the centre right, legs slightly open. Opens once on arrival while a fine umber arc draws on the sheet beneath it, then rests. |
-| **Triangular scale rule** | Sand-coloured matte plastic, three bevelled faces | Lies along the lower edge, parallel to the frame. Engraved ticks are real geometry (recessed bars), numerals for 1:100 and 1:200 are a texture with a matching normal map. |
+| **Triangular scale rule** | Boxwood (caramel), three chamfered and bevelled faces | Lies along the lower edge, parallel to the frame. Engraved ticks are real geometry, set just into each face; the figures for 1:100 and 1:200 are a texture on the face. A white rule disappeared against the vellum, so it became boxwood. |
 | **45° set square** | Smoked caramel acrylic, polished bevelled edges, a cut-out inner triangle | Upper left, overlapping the sheet's edge. Graduations along the hypotenuse. |
-| **Mechanical pencil** | Matte espresso barrel, knurled steel grip, brass clip and push cap | Lies diagonally across the scale rule, pointing toward the compass, so the eye travels pencil, compass, arc. |
+| **Mechanical pencil** | Matte espresso hexagonal barrel, knurled steel grip, brass clip and push cap | Lies on the sheet just behind the scale rule, pointing toward the compass, so the eye travels pencil, compass, arc. |
 | **Rolled drawing** | Cartridge paper with a visible spiral end, a cocoa cloth band | Back right, half out of frame, giving depth. |
 
 The sheet itself carries a faint plan drawing in umber (a courtyard plan, a nod to Shankar's recurring court), which the compass arc completes.
@@ -247,13 +251,17 @@ On desktop the copy sits in columns 1–5 over the dark ground, the scene in col
 - The scene module and Three.js load only after first paint, when the browser is idle and the hero is in view.
 - Pixel ratio capped at 1.5 (1.25 on coarse pointers). Shadows are frozen after the reveal.
 - Rendering pauses when the hero leaves the viewport or the tab is hidden, and the idle drift runs at 30 fps.
-- The still image stays, and the scene never loads, when WebGL is missing, under reduced motion, with Save-Data, or on devices reporting 2 GB of memory or less.
+- The still image stays, and the scene never loads, when WebGL is missing or software-rendered (SwiftShader, llvmpipe), under reduced motion, with Save-Data, or on devices reporting 2 GB of memory or less. An inline script in `<head>` decides this before first paint.
+- **Frame guard.** If frames 4–15 cost more than 22 ms each on average, the scene is disposed and the still fades in.
+- If the scene is not live 2.6 s after the page becomes idle, the still shows; a scene that arrives later starts at rest, so nothing jumps.
+- The still image is rendered from the scene itself by `dev/hero-still.mjs` (5:4 for desktop, 4:5 for phones).
+- Lighthouse's headless Chrome renders WebGL in software, so its scores measure the still-image path.
 
 ---
 
 ## 9. Components
 
-- **Header.** Wordmark in Bodoni Moda, then Work, Technical, About and Contact in Anek. Transparent over the dark hero, vellum with a hairline once scrolled. The current page is marked by a 1 × 6 px brass tick and a 1 px underline, plus `aria-current="page"`. Below 768 px the links fold behind a "Menu" pill.
+- **Header.** Wordmark in Bodoni Moda, then Work, Technical, About and Contact in Anek. Espresso on the home page, continuous with the hero; vellum with a hairline elsewhere. It scrolls with the page. The current page is marked by a 1 × 6 px brass tick and a 1 px underline, plus `aria-current="page"`. Below 768 px the links fold behind a "Menu" pill.
 - **Menu.** A walnut panel with large rounded bottom corners: pages in Bodoni Moda, then the eight projects with 4:5 thumbnails. Esc closes it and returns focus.
 - **Buttons.** Pills. Primary: espresso fill with vellum text on light, brass fill with espresso text on dark. Secondary: 1 px strong outline. Hover steps one tone; no shadow.
 - **Project thumbnails.** Rounded image frame on a sand mat, a square plate tag pinned to the top-left corner, title in Bodoni Moda below, semester and place in secondary text. Hover crops in 3% and underlines the title.

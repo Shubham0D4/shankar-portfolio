@@ -63,7 +63,7 @@ Direction A comes straight from the work: the materials it uses, its recurring c
 ## 4. Sitemap and page content
 
 1. **Home `/`**
-   - **Hero.** A 3D "courtyard formation" model: a solid block splits into four masses around a green void. Name, "Architecture student, Sir J.J. College of Architecture" and a one-line statement.
+   - **Hero.** A procedural 3D still life of drafting instruments (DESIGN.md §8). Name, "Architecture student, Sir J.J. College of Architecture" and a one-line statement. It replaced the earlier "courtyard formation" block on 2026-11-12.
    - **Featured work.** Three projects (School, Irshalpada, Mass Housing), each with a live mini-model or poster.
    - **Statement.** The full CV statement.
    - **Footer strip.** All 8 projects as a horizontal index.
@@ -89,11 +89,8 @@ Direction A comes straight from the work: the materials it uses, its recurring c
 - **Look.** Matte material tints and a subtle edge-line overlay.
 - **Lazy loading.** Each model starts only when scrolled into view and pauses when it leaves.
 
-### Home hero: Courtyard Formation
-- **Abstraction.** Concept diagram, based on the architect's own "formation of courtyards" diagram (pages 10 and 17).
-- **Content.** A sandstone cube on a ground plane.
-- **Scroll.** The cube splits along two axes into four masses, a green void rises in the centre, and jali panels fade into the gaps.
-- **Mouse.** Small camera parallax, and the sun follows the cursor so shadows sweep through the court.
+### Home hero
+Superseded on 2026-11-12. The hero is now the drafting-instruments still life specified in DESIGN.md §8 and built in `src/hero/instruments.ts`.
 
 ### Model 1: Residential School (build first)
 - **Why first.** It is the strongest form idea (architecture on contours) and the weakest images (72 ppi).
@@ -168,7 +165,7 @@ Direction A comes straight from the work: the materials it uses, its recurring c
 | 0 | Extraction: `content.json`, `public/assets/`, and this plan. **Done.** |
 | 1 | Vite scaffold, design tokens (palette, type scale, spacing), base layout, navigation and footer. |
 | 2 | Static site from `content.json`: Home, Work, the 8 project pages, Technical, About and Contact, with image pipeline and lightbox. Shippable without 3D. |
-| 3 | Shared 3D core (renderer, sun rig, materials, lazy loader, fallbacks, reduced-motion handling) and the Home "Courtyard Formation" hero. |
+| 3 | Shared 3D core (renderer, sun rig, materials, lazy loader, fallbacks, reduced-motion handling) and the Home hero (now the instrument still life, DESIGN.md §8). |
 | 4 | Tracing tool, then Model 1: Residential School. |
 | 5 | Model 2: Irshalpada cluster and the Temple of Memories. |
 | 6 | Model 3: Mass Housing progression. |

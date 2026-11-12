@@ -14,13 +14,14 @@
   },
   "dependencies": {
     "@fontsource-variable/anek-latin": "^5.3.0",
+    "@fontsource-variable/bodoni-moda": "^5.3.0",
     "@fontsource-variable/eczar": "^5.3.0",
-    "gsap": "^3.15.1",
     "three": "^0.187.0"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
     "@types/three": "^0.187.0",
+    "sharp": "^0.35.5",
     "typescript": "^7.0.2",
     "vite": "^8.3.6"
   }

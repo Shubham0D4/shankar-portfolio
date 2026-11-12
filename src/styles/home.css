@@ -1,0 +1,390 @@
+/* ---------- Home hero: the instrument still life (DESIGN.md §8) ---------- */
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+.hero__inner {
+  position: relative;
+  z-index: 1;
+  order: 1;
+  row-gap: var(--space-xl);
+  padding-block: var(--space-xl) var(--space-m);
+}
+
+.hero__copy {
+  grid-column: 1 / -1;
+}
+
+.hero__role {
+  color: var(--text-secondary);
+  font-size: var(--step-0);
+  font-weight: var(--wght-ui);
+  max-width: 36ch;
+  line-height: 1.4;
+}
+
+.hero__name {
+  margin-top: var(--space-s);
+  font-variation-settings: var(--opsz-display);
+  font-size: var(--step-display);
+  font-weight: var(--wght-heading);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+/* Bodoni Moda has no W–a kern pair; close it by hand. */
+.hero__name .kern-w {
+  margin-right: -0.09em;
+}
+
+.hero__lead {
+  margin-top: var(--space-m);
+  max-width: 34ch;
+  font-size: var(--step-1);
+  line-height: 1.45;
+}
+
+.hero__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-s);
+  margin-top: var(--space-l);
+  padding: 0;
+  list-style: none;
+}
+
+.hero__foot {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: end;
+  gap: var(--space-m);
+}
+
+.hero__caption {
+  max-width: 40ch;
+  color: var(--text-secondary);
+  font-size: var(--step--1);
+  line-height: 1.4;
+}
+
+/* The stage: the still image now, the live scene once it loads. */
+.hero__stage {
+  position: relative;
+  order: 2;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  margin: calc(var(--space-l) * -1) 0 0;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 86%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 86%, transparent 100%);
+}
+
+.hero__still,
+.hero__still img {
+  width: 100%;
+  height: 100%;
+}
+
+.hero__still img {
+  object-fit: cover;
+}
+
+.hero__stage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1200ms var(--ease-out);
+}
+
+.hero__stage.is-live canvas {
+  opacity: 1;
+}
+
+/* When the live scene will load, the still waits hidden so the scene can
+   fade up from the dark ground; it shows if the scene is slow or fails. */
+.hero-3d .hero__still {
+  opacity: 0;
+  transition: opacity var(--dur-reveal) var(--ease-out);
+}
+
+.hero-3d .hero__stage.show-still .hero__still {
+  opacity: 1;
+}
+
+.hero__stage.is-live .hero__still {
+  opacity: 0;
+}
+
+/* The curved divider: a shallow compass arc with brass ticks. */
+.hero__arc {
+  position: relative;
+  z-index: 2;
+  order: 3;
+  display: block;
+  width: 100%;
+  height: clamp(44px, 5vw, 72px);
+  margin-top: calc(clamp(44px, 5vw, 72px) * -1);
+  pointer-events: none;
+}
+
+.hero__arc-sheet {
+  fill: var(--vellum);
+}
+
+.hero__arc-ticks {
+  fill: none;
+  stroke: var(--brass);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.75;
+}
+
+@media (min-width: 64em) {
+  .hero {
+    min-height: clamp(40rem, calc(100svh - var(--header-h)), 60rem);
+  }
+
+  .hero__stage {
+    position: absolute;
+    inset: 0 0 0 max(40%, 34rem);
+    z-index: 0;
+    width: auto;
+    aspect-ratio: auto;
+    margin: 0;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 26%), linear-gradient(to bottom, transparent 0, #000 14%);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(to right, transparent 0, #000 26%), linear-gradient(to bottom, transparent 0, #000 14%);
+    mask-composite: intersect;
+  }
+
+  .hero__inner {
+    flex: 1;
+    align-content: space-between;
+    padding-block: var(--space-3xl) calc(var(--space-xl) + 72px);
+  }
+
+  .hero__copy {
+    grid-column: 1 / span 5;
+    align-self: center;
+  }
+
+  .hero__foot {
+    grid-column: 1 / span 6;
+  }
+
+  .hero__arc {
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    margin: 0;
+  }
+}
+
+/* ---------- Sections ---------- */
+
+.section {
+  margin-top: var(--space-section);
+}
+
+.hero + .section {
+  margin-top: var(--space-3xl);
+}
+
+.section__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-s) var(--space-m);
+  margin-bottom: var(--space-2xl);
+  padding-bottom: var(--space-s);
+  border-bottom: var(--hairline);
+}
+
+.section__head h2 {
+  font-variation-settings: var(--opsz-heading);
+  font-size: var(--step-4);
+  letter-spacing: -0.02em;
+}
+
+.section__head a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: var(--wght-ui);
+}
+
+/* ---------- Selected work: wide alternating rows ---------- */
+
+.feature {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: var(--space-m);
+  align-items: end;
+}
+
+.feature + .feature {
+  margin-top: var(--space-3xl);
+}
+
+.feature__frame {
+  position: relative;
+  grid-column: 1 / -1;
+  display: block;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border-radius: var(--r-card);
+  background: var(--surface-sunken);
+}
+
+@supports (corner-shape: superellipse(1.6)) {
+  .feature__frame {
+    corner-shape: superellipse(1.6);
+  }
+}
+
+.feature__frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--focus-point, center);
+  transform: scale(var(--zoom, 1));
+  transform-origin: var(--focus-point, center);
+  transition: transform 700ms var(--ease-out);
+}
+
+.feature:hover .feature__frame img {
+  transform: scale(calc(var(--zoom, 1) * 1.03));
+}
+
+/* A square tag pinned to a rounded frame: curvy, then sharp. */
+.feature__plate {
+  position: absolute;
+  top: var(--space-s);
+  left: var(--space-s);
+}
+
+.feature__text {
+  grid-column: 1 / -1;
+}
+
+.feature__index {
+  color: var(--text-secondary);
+}
+
+.feature__title {
+  margin-top: var(--space-xs);
+  font-variation-settings: var(--opsz-heading);
+  font-size: var(--step-4);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.feature__title a {
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0 1px;
+  transition: background-size var(--dur-short) var(--ease-out);
+}
+
+.feature__title a:hover,
+.feature:hover .feature__title a {
+  background-size: 100% 1px;
+}
+
+.feature__meta {
+  margin-top: var(--space-s);
+  font-weight: var(--wght-ui);
+}
+
+.feature__line {
+  margin-top: var(--space-2xs);
+  max-width: 42ch;
+  color: var(--text-secondary);
+}
+
+@media (min-width: 48em) {
+  .feature__frame {
+    grid-column: 1 / span 5;
+  }
+  .feature__text {
+    grid-column: 6 / -1;
+  }
+  .feature--flip .feature__frame {
+    grid-column: 4 / -1;
+    grid-row: 1;
+  }
+  .feature--flip .feature__text {
+    grid-column: 1 / span 3;
+    grid-row: 1;
+  }
+}
+
+@media (min-width: 64em) {
+  .feature__frame {
+    grid-column: 1 / span 7;
+  }
+  .feature__text {
+    grid-column: 9 / -1;
+  }
+  .feature--flip .feature__frame {
+    grid-column: 6 / -1;
+  }
+  .feature--flip .feature__text {
+    grid-column: 1 / span 4;
+  }
+}
+
+/* ---------- Statement ---------- */
+
+.statement {
+  row-gap: var(--space-l);
+  padding-top: var(--space-xl);
+  border-top: var(--hairline);
+}
+
+.statement blockquote {
+  grid-column: 1 / -1;
+  margin: 0;
+  max-width: 28em;
+  font-family: var(--font-display);
+  font-size: var(--step-3);
+  font-weight: 400;
+  font-variation-settings: var(--opsz-text);
+  line-height: 1.22;
+  letter-spacing: -0.01em;
+}
+
+.statement__by {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+}
+
+.statement__name {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+}
+
+.statement__role {
+  color: var(--text-secondary);
+  font-size: var(--step--1);
+}
+
+@media (min-width: 64em) {
+  .statement blockquote {
+    grid-column: 3 / span 9;
+  }
+  .statement__by {
+    grid-column: 3 / span 4;
+  }
+}

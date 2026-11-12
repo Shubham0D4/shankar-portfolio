@@ -1412,3 +1412,390 @@
   outline: 2px solid var(--ink);
   outline-offset: 3px;
 }
+
+/* ---------- Building inspect: the stage (MODEL_NOTES.md §7) ----------
+   A drawing board over the page: the model on the left, a title block on
+   the right. Leader lines follow drafting convention: a solid line is
+   from the drawings, a dashed line is assumed. */
+
+.inspect {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--film);
+  color: var(--ink);
+  opacity: 0;
+  transition: opacity var(--dur-medium) var(--ease-light);
+}
+
+.inspect[open] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+.inspect.is-open {
+  opacity: 1;
+}
+
+.inspect::backdrop {
+  background: rgb(30 39 86 / 0.35);
+}
+
+.inspect__stage {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.inspect__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+}
+
+.inspect__canvas:active {
+  cursor: grabbing;
+}
+
+.inspect__leaders {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.inspect__leader {
+  stroke: var(--ink);
+  stroke-width: 1.25;
+}
+
+.inspect__leader--assumed {
+  stroke-dasharray: 4 3;
+}
+
+.inspect__dot {
+  stroke: var(--ink);
+  stroke-width: 1.5;
+  fill: var(--ink);
+}
+
+.inspect__dot--assumed {
+  fill: var(--film);
+}
+
+.inspect__callouts {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: none;
+}
+
+.inspect__callout {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  max-width: 13.5rem;
+  padding: var(--space-3xs) var(--space-2xs);
+  background: rgb(236 237 232 / 0.94);
+  border-left: 2px solid var(--ink);
+  font-size: var(--step--1);
+  line-height: 1.25;
+}
+
+.inspect__callout--assumed {
+  border-left-style: dashed;
+}
+
+.inspect__callout-title {
+  font-weight: 620;
+  font-stretch: var(--wdth-label);
+}
+
+.inspect__callout-detail {
+  color: var(--ink-soft);
+  font-size: var(--step--2);
+}
+
+.inspect__tag {
+  justify-self: start;
+  margin-top: 2px;
+  padding: 0 5px;
+  font-size: var(--step--2);
+  font-stretch: var(--wdth-label);
+  background: var(--ink);
+  color: var(--film);
+}
+
+.inspect__callout--assumed .inspect__tag {
+  background: transparent;
+  color: var(--ink);
+  outline: 1.5px dashed var(--ink);
+  outline-offset: -1.5px;
+}
+
+.inspect__hint {
+  position: absolute;
+  left: var(--space-xs);
+  bottom: var(--space-xs);
+  margin: 0;
+  max-width: 34rem;
+  padding: var(--space-3xs) var(--space-2xs);
+  background: rgb(236 237 232 / 0.85);
+  color: var(--ink-soft);
+}
+
+.inspect__panel {
+  display: grid;
+  align-content: start;
+  gap: var(--space-m);
+  max-height: 46dvh;
+  overflow: auto;
+  padding: var(--space-s) var(--margin) var(--space-l);
+  border-top: 2px solid var(--ink);
+  background: var(--film);
+}
+
+.inspect__head {
+  display: grid;
+  gap: var(--space-2xs);
+}
+
+.inspect__back {
+  justify-self: start;
+  border-color: var(--ink);
+  border-width: 2px;
+}
+
+.inspect__where {
+  margin: var(--space-2xs) 0 0;
+  color: var(--ink-soft);
+}
+
+.inspect__title {
+  margin: 0;
+  font-size: var(--step-3);
+  font-stretch: var(--wdth-display);
+  font-weight: var(--wght-display);
+  line-height: var(--leading-heading);
+}
+
+.inspect__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+}
+
+.inspect__count {
+  min-width: 5.5rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.inspect__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2xs);
+  padding-top: var(--space-s);
+  border-top: var(--hairline);
+}
+
+.inspect__controls .filter:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.inspect__pair {
+  display: flex;
+}
+
+.inspect__pair .filter + .filter {
+  margin-left: -1.5px;
+}
+
+.inspect__range {
+  display: grid;
+  flex: 1 1 100%;
+  gap: var(--space-3xs);
+}
+
+.inspect__range input {
+  width: 100%;
+  min-height: 44px;
+  accent-color: var(--ink);
+}
+
+.inspect__plan {
+  margin: 0;
+  padding-top: var(--space-s);
+  border-top: var(--hairline);
+}
+
+.inspect__plan svg {
+  display: block;
+  width: 100%;
+  max-height: 17rem;
+}
+
+.inspect__plan figcaption {
+  margin-top: var(--space-2xs);
+  color: var(--ink-soft);
+}
+
+.plan__plot {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 0.12;
+  stroke-dasharray: 0.5 0.3;
+}
+
+.plan__plinth {
+  fill: var(--film-deep);
+  stroke: var(--ink);
+  stroke-width: 0.05;
+}
+
+.plan__court {
+  fill: rgb(110 139 94 / 0.45);
+}
+
+.plan__steps {
+  fill: none;
+  stroke: var(--ink-soft);
+  stroke-width: 0.05;
+}
+
+.plan__tree {
+  fill: rgb(110 139 94 / 0.25);
+  stroke: var(--court);
+  stroke-width: 0.08;
+}
+
+.plan__wall {
+  stroke: var(--ink);
+  stroke-linecap: square;
+}
+
+.plan__window {
+  stroke: var(--ink-soft);
+  stroke-width: 0.1;
+}
+
+.plan__door {
+  stroke: var(--ink);
+  stroke-width: 0.06;
+  fill: none;
+}
+
+.plan__post {
+  fill: var(--ink);
+}
+
+.plan__room {
+  font-size: 0.62px;
+  fill: var(--ink-soft);
+  text-anchor: middle;
+  dominant-baseline: middle;
+  font-stretch: var(--wdth-label);
+}
+
+.plan__cone {
+  fill: rgb(217 164 65 / 0.6);
+  stroke: var(--ink);
+  stroke-width: 0.1;
+}
+
+.plan__eye {
+  fill: var(--ink);
+}
+
+.plan__you-label {
+  font-size: 1px;
+  font-weight: 650;
+  fill: var(--ink);
+  text-anchor: middle;
+}
+
+.inspect__key {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3xs) var(--space-2xs);
+  margin: 0;
+}
+
+.inspect__k {
+  display: inline-block;
+  width: 1.5rem;
+  border-top: 2px solid var(--ink);
+}
+
+.inspect__k--assumed {
+  border-top-style: dashed;
+  margin-left: var(--space-xs);
+}
+
+.inspect__notes {
+  display: grid;
+  gap: var(--space-2xs);
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+}
+
+.inspect__notes p {
+  margin: 0;
+  max-width: 60ch;
+}
+
+.inspect__stats dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px var(--space-s);
+  margin: var(--space-2xs) 0 0;
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+}
+
+.inspect__stats dd {
+  margin: 0;
+}
+
+/* Dusk: the stage turns to indigo; labels keep their film ground. */
+.inspect.is-dusk .inspect__hint {
+  background: rgb(30 39 86 / 0.7);
+  color: var(--film);
+}
+
+@media (min-width: 64em) {
+  .inspect[open] {
+    grid-template-columns: minmax(0, 1fr) 23rem;
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .inspect__panel {
+    max-height: none;
+    height: 100dvh;
+    padding: var(--space-m) var(--space-m) var(--space-xl);
+    border-top: 0;
+    border-left: 2px solid var(--ink);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inspect,
+  .inspect-dim {
+    transition: none;
+  }
+}

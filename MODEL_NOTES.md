@@ -681,7 +681,8 @@ The first type built end to end is **type A**, which has the richest set of shee
 | Placement | `src/models/irshalpada.place.ts` | House-local to world matrices, the same chain `buildCluster()` applies. Also picks the house from a cluster hit. |
 | Plan side | `src/models/irshalpada.ts`, `src/inspect/controller.ts` | Covers hover, select, the camera glide, pause, the dim, keyboard access and the URL. With nothing hovered, nothing extra is drawn. |
 | Stage | `src/inspect/inspect.ts` | Its own renderer and scene, rendered on demand. Controls: orbit, day and dusk, people, labels, roof lift, section cut, plan inset, and previous and next. |
-| Detailed type | `src/inspect/buildings/irshalpada-house-a.ts` | Type A. The fixed fabric is cached per device tier. Leaves, planting and people vary with the plot number. |
+| Detailed types | `src/inspect/buildings/irshalpada-house-a.ts` and `irshalpada-house-b.ts` | Each module holds only its own readings. The fixed fabric is cached per device tier. Leaves, planting and people vary with the plot number. |
+| Shared vocabulary | `src/inspect/buildings/vernacular.ts` | Roof planes (a gable is two planes, a lean-to is one), with valances and rafter tails only on edges in the open. Walls whose tops follow the roofs or stop under a slab. Casements, shutters, panelled and louvred doors, jali, vents, turned posts, beams, plinths, steps and compound walls. |
 | Fallback | `src/inspect/buildings/massing.ts` | Any type without a detailed module shows the plan model's own massing, labelled "Massing only". |
 | Materials | `src/inspect/tex.ts` | Procedural PBR, built from tileable height fields: colour, normal, and packed AO, roughness and metalness. Capped at 512 px (256 on the low tier). |
 | Props | `src/inspect/props.ts` | People, trees, plants, laundry, bicycle, firewood, pots and the tulsi vrindavan. Low-poly and vertex-coloured. |
@@ -739,7 +740,8 @@ All figures are from headless Chrome with software WebGL (SwiftShader) at 1440 �
 |---|---|---|---|---|
 | A, detailed | high | 50 | 82,900 | 14.2 MB materials + 16 MB shadow map |
 | A, detailed | low | 50 | 65,900 | 3.6 MB materials + 4 MB shadow map |
-| B, massing | high / low | 15 | 26,200 / 9,200 | Ground textures only |
+| B, detailed | high | 83 | 94,400 | 15.5 MB materials + 16 MB shadow map |
+| B, detailed | low | 83 | 77,400 | 3.9 MB materials + 4 MB shadow map |
 | School, massing | high / low | 11 | 26,800 / 9,800 | Ground textures only |
 | Temple, massing | high / low | 7 | 24,800 / 7,800 | Ground textures only |
 
@@ -750,7 +752,9 @@ All figures are from headless Chrome with software WebGL (SwiftShader) at 1440 �
 | Chunk | Size |
 |---|---|
 | Stage | 16.9 KB |
-| Type A | 10.6 KB |
+| Type A | 4.4 KB |
+| Type B | 5.4 KB |
+| Shared vocabulary | in a shared chunk |
 | Fallback | 1.5 KB |
 
 ### 7.8 Verification
@@ -853,3 +857,75 @@ The full list is in §7.6.
 - **Louvred doors.** Six leaves, where the render suggests seven or eight.
 - **Plan scale.** ±20 %, inherited from §2. All plan sizes scale together.
 - **Interior.** Room walls run up to the roof, as in section AA′. There is no ceiling, and the furniture is massing only.
+
+### 7.10 Type B: the ground+1 house (p42), built 2026-11-12
+
+**Readings**
+
+| Item | Value | Basis |
+|---|---|---|
+| Plinth, ground sill, ground window head | +0.60, +1.50, +2.60 | **[stated]** |
+| Lean-to roofs | Tile top +2.60 at the low edge, +4.60 at the high edge | **[stated]** |
+| Eaves (wall plate) | +3.10 | **[stated]** |
+| First floor | +3.50 | **[stated]**. Bamboo slab with mud screed **[stated]**. Soffit at +3.30 [read]. |
+| Upper sill, upper head | +4.60, +5.80 | **[stated]** on section AA′ |
+| Ridge | +8.50 | **[stated]** |
+| Upper wall plate | +6.30 | [read]. Scaled off section AA′, whose upper eave falls between the +5800 and +8500 marks. |
+| Ground plan | WC, bath, two bedrooms, kitchen with a chul bay, stair hall, living room, courtyard with a tree, and the terracotta jali screen by the WC | [read] off the p42 plan at about 41 px/m, ±0.3 m |
+| First-floor plan | Two bedrooms over the ground bedroom and kitchen, and the stair hall, opening onto a balcony 1.7 m deep | [read] off the first-floor plan |
+| Roofs | Upper gable over the two-storey block. West lean-to over the WC, bath and west bedroom. East lean-to over the living room and its verandah. Both lean-tos fall west, matching the roof plan's arrows. A small canopy over the courtyard's west verandah. A lean-to over the chul bay. | [read] |
+| Front elevation | Drawn the right way round: window and two doors on each floor of the block; window, double door and window on the living room. Not mirrored, unlike p41. | [read] |
+| Balcony | Turned posts stacked at the balcony edge on both floors. A railing of pierced pickets in pointed arches. | [read] from the elevation and the p42 render |
+| Party wall | Each type B house is one of a mirrored pair sharing its east wall (p40). The twin is shown as plain massing from the plan model. The roof edges that meet it carry no valance. | **[stated]** |
+
+**Assumed**
+
+| Item | Basis |
+|---|---|
+| Stair form | Dog-leg, 16 risers of 181 mm: a masonry first flight and a timber second flight. The plans show only a stair. |
+| Front verandah posts at z 12.6 | Needed to carry the east lean-to. The plan shows only the courtyard-corner posts. |
+| Post at the west lean-to's free high edge | Needed for support |
+| Canopy brackets | Needed for support |
+| Living-room ceiling under the balcony | At the slab soffit |
+| West bedroom's courtyard window | From the brief that every room opens onto the courtyard |
+| Furniture | Not in the drawings |
+| Kitchen garden, tulsi vrindavan, laundry, firewood, bicycle | Not in the drawings |
+| Compound wall height | Its line is [read] from the plan |
+
+**Lift.** "Separate the floors" lifts three layers apart:
+
+| Layer | Lift |
+|---|---|
+| Ground-floor roofs | 3.6 m |
+| Upper storey (bamboo floor, rooms, balcony, the man on it) | 3.6 m |
+| Upper roof | 7.2 m |
+
+**Verification**
+- Front, aerial, back, balcony close-up, floors separated, section, dusk and a mirrored plot (06) were rendered. The screenshots are in `.inspect-review/b*.png`.
+- Main-scene numbers are unchanged; nothing in the plan model was touched for type B.
+- **Heap over 10 visits** to plots 05, 06 and 41: 11.66 MB after the first visit, then 11.93 → 12.60 MB, the same warm-up curve as type A. A heap-snapshot diff between visit 6 and visit 15 shows no retained application or three.js objects; the growth is compiled code and browser caches.
+- **Refactor.** Type A was rebuilt on the shared vocabulary in the same change. It renders the same as before: front, jali and roof-lift views were compared with the earlier screenshots.
+
+**Fidelity report: type B**
+
+*Matches the PDF*
+- **Levels.** Every level is as written on the sections.
+- **Plans.** The ground and first-floor rooms, doors and windows, and the courtyard with its tree.
+- **Roofs.** The roof forms and their fall directions.
+- **Balcony.** The bedrooms open onto it.
+- **Floor.** The bamboo first floor, its soffit visible from the verandah.
+- **Woodwork.**
+  - Stacked turned posts with brass rings.
+  - Carved valances.
+  - The pointed-arch railing.
+  - Louvred folding doors from the living room to the courtyard verandah.
+- **Chul bay** with its jali.
+- **Toilet and bath** apart from the rooms on the same plinth.
+- **The pair.** The mirrored twin is attached at the party wall.
+
+*Differs* (known)
+- **Party-wall end.** The upper roof stops at the party wall, where the drawing's continuous roof over the pair carries on. The twin's massing comes from the simpler plan model.
+- **Canopy.** Its extent is fitted between the elevation and section BB′, which do not agree exactly.
+- **Railing.** A generic pattern, not traced from the render.
+- **Plan scale.** ±20 %, as for type A.
+

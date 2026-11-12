@@ -1340,3 +1340,75 @@
     transition: none;
   }
 }
+
+/* ---------- Building inspect: plan side (MODEL_NOTES.md §7) ---------- */
+
+/* The plan dims round the chosen building while the camera glides in. */
+.inspect-dim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), transparent 0 7rem, rgb(30 39 86 / 0.55) 22rem);
+  opacity: 0;
+  transition: opacity var(--dur-medium) var(--ease-light);
+}
+
+.inspect-dim.is-on {
+  opacity: 1;
+}
+
+/* Keyboard access: one button per building, shown only while focused. */
+.bldg-nav {
+  position: absolute;
+  left: var(--space-xs);
+  top: calc(var(--space-2xs) + var(--space-xs));
+  z-index: 3;
+}
+
+.bldg-nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bldg-nav li,
+.bldg-nav:not(:focus-within) .bldg-nav__hint {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.bldg-nav li:focus-within {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip-path: none;
+}
+
+.bldg-nav__hint {
+  margin: 0 0 var(--space-3xs);
+  padding: var(--space-3xs) var(--space-2xs);
+  background: var(--film);
+  color: var(--ink);
+}
+
+.bldg-nav__item {
+  min-height: 44px;
+  padding: 0 var(--space-s);
+  border: 2px solid var(--ink);
+  background: var(--gold);
+  color: var(--ink);
+  font-weight: 600;
+  font-stretch: var(--wdth-label);
+  cursor: pointer;
+}
+
+.bldg-nav__item:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}

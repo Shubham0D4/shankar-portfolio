@@ -50,7 +50,9 @@ import { createRig, TINT } from '../three/rig';
 import { gableRoof, mirrorX, parapet, prism, rect, type V2 } from './kit/geometry';
 import { createBlockUniforms, jaliTexture, patchBlocks, type BlockUniforms } from './kit/patch';
 import * as D from './irshalpada.data';
-import type { CamKey, HoverInfo, ModelOptions, SiteModelHandle } from './types';
+import type { CamKey, HoverInfo, InspectableModel, ModelOptions, SiteModelHandle } from './types';
+import { houseAt, houseCentre, houseMatrix, houseType } from './irshalpada.place';
+import { irshalpadaBuildings, type BuildingRef } from '../inspect/registry';
 
 const DEG = Math.PI / 180;
 const clamp01 = (t: number) => Math.min(1, Math.max(0, t));
@@ -117,7 +119,7 @@ function beam(a: V2, b: V2, y0: number, y1: number, t: number, offset = 0): Buff
   return clean(g);
 }
 
-interface Layers {
+export interface Layers {
   walls: BufferGeometry[];
   plinth: BufferGeometry[];
   roofs: BufferGeometry[];
@@ -128,7 +130,7 @@ interface Layers {
   water: BufferGeometry[];
   jali: BufferGeometry[];
 }
-const emptyLayers = (): Layers => ({ walls: [], plinth: [], roofs: [], timber: [], foliage: [], court: [], dark: [], water: [], jali: [] });
+export const emptyLayers = (): Layers => ({ walls: [], plinth: [], roofs: [], timber: [], foliage: [], court: [], dark: [], water: [], jali: [] });
 
 function tree(x: number, z: number, y: number, scale: number, L: Layers): void {
   const trunk = clean(new CylinderGeometry(0.14 * scale, 0.2 * scale, 3 * scale, 6));
@@ -171,7 +173,7 @@ function jaliQuad(a: V2, b: V2, y0: number, y1: number): BufferGeometry {
 
 const inRect = (x: number, z: number, r: D.R4) => x > r[0] && x < r[2] && z > r[1] && z < r[3];
 
-function buildHouse(h: D.HouseType): Layers {
+export function buildHouse(h: D.HouseType): Layers {
   const L = emptyLayers();
   L.plinth.push(prism(h.plinth, 0, D.PLINTH));
   for (const s of h.slabs) L.plinth.push(prism(rect(...s.rect), s.y0, s.y1));
@@ -265,7 +267,7 @@ function buildCluster(): Layers {
 
 /* ---------- School and temple ---------- */
 
-function buildSchool(L: Layers): void {
+export function buildSchool(L: Layers): void {
   const S = D.SCHOOL;
   const [ox, oz] = S.at;
   const add = (list: BufferGeometry[], g: BufferGeometry) => list.push(g.translate(ox, 0, oz));
@@ -294,7 +296,7 @@ function buildSchool(L: Layers): void {
   add(L.court, prism(rect(-12, 21, 12, 34), -0.2, 0.05));
 }
 
-function buildTemple(L: Layers): void {
+export function buildTemple(L: Layers): void {
   const T = D.TEMPLE;
   L.plinth.push(prism(rect(...T.plaza), 0, 0.08));
   const ring = T.ring / 2;
@@ -673,6 +675,60 @@ void main() {
   let needsPick = false;
   const roofLift = ru.uLift.value;
 
+  /* Building inspect (MODEL_NOTES.md §7): whole-building hover, selection,
+     camera glide and pause. Nothing here draws unless a building is hovered,
+     focused or selected. */
+  const refs = irshalpadaBuildings();
+  const byId = new Map(refs.map((r) => [r.id, r]));
+  let paused = false;
+  let hoverRef: BuildingRef | null = null;
+  let previewRef: BuildingRef | null = null;
+  let focusMix = 0;
+  let focusTo = 0;
+  let focusDone: (() => void) | null = null;
+  const focusPt = new Vector3();
+  const centreOf = (r: BuildingRef) =>
+    r.house >= 0 ? houseCentre(r.block, r.house, 2.5) : r.kind === 'school' ? new Vector3(D.SCHOOL.at[0], 3, D.SCHOOL.at[1] + 9) : new Vector3(0, 4, 0);
+
+  // Hover shell: the house type's own walls, plinth, posts and roofs, drawn over
+  // the plan in a warm wash with the house's matrix. Built on first hover.
+  const shellMat = own(
+    new MeshBasicMaterial({ color: 0xffcf73, transparent: true, opacity: 0.4, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }),
+  );
+  const shells: Partial<Record<D.HouseType['id'], { body: BufferGeometry; roof: BufferGeometry }>> = {};
+  const shellOf = (t: D.HouseType) => {
+    let s = shells[t.id];
+    if (!s) {
+      const L = buildHouse(t);
+      s = { body: own(merge([...L.walls, ...L.plinth, ...L.timber])), roof: own(merge(L.roofs)) };
+      for (const k of ['foliage', 'court', 'dark', 'water', 'jali'] as const) L[k].forEach((g) => g.dispose());
+      shells[t.id] = s;
+    }
+    return s;
+  };
+  const shellBody = new Mesh(new BufferGeometry(), shellMat);
+  const shellRoof = new Mesh(new BufferGeometry(), shellMat);
+  for (const m of [shellBody, shellRoof]) {
+    m.matrixAutoUpdate = false;
+    m.visible = false;
+    m.renderOrder = 3;
+    m.frustumCulled = false;
+    scene.add(m);
+  }
+  const placeShell = () => {
+    const r = previewRef ?? hoverRef;
+    const on = !!r && r.house >= 0 && !paused;
+    shellBody.visible = shellRoof.visible = on;
+    if (!on || !r) return;
+    const s = shellOf(houseType(r.house));
+    shellBody.geometry = s.body;
+    shellRoof.geometry = s.roof;
+    const m = houseMatrix(r.block, r.house);
+    shellBody.matrix.copy(m);
+    shellRoof.matrix.copy(m).premultiply(new Matrix4().makeTranslation(0, roofLift[r.block], 0));
+    shellBody.matrixWorldNeedsUpdate = shellRoof.matrixWorldNeedsUpdate = true;
+  };
+
   const apply = (time: number) => {
     const s = stage;
     const I = idea;
@@ -716,6 +772,8 @@ void main() {
       ringMats[i].opacity = I * 0.55 * (1 - ph);
     });
 
+    placeShell();
+
     // Hover / pinned highlight.
     const range = pinned ?? (hoverBlock >= 0 ? ([hoverBlock, hoverBlock] as [number, number]) : null);
     if (range) {
@@ -730,6 +788,10 @@ void main() {
     let k = camAt(s);
     if (I > 0) k = mixKey(k, IDEA_KEY, smooth(I, 0, 1));
     if (opts.debugView) k = opts.debugView;
+    else if (focusMix > 0) {
+      // Glide towards the selected building, keeping the viewing direction.
+      k = mixKey(k, { az: k.az, el: 36, dist: 30, t: [focusPt.x, 2.5, focusPt.z], fov: 30 }, smooth(focusMix, 0, 1));
+    }
     const drift = opts.still || opts.debugView ? 0 : Math.sin(time / 9000) * (s > 3.6 && s < 4.6 ? 2 : 5);
     const aspect = width / height;
     const fit = opts.debugView ? 1 : Math.max(1, Math.pow(1.55 / aspect, 0.85));
@@ -754,38 +816,47 @@ void main() {
   const raycaster = new Raycaster();
   const ndc = new Vector2();
   const pickables = instanced.filter((m) => ['walls', 'roofs', 'plinth', 'dark'].includes(m.userData.layer));
-  const OPEN_NAME = { n: 'north', e: 'east', s: 'south', w: 'west' } as const;
-  let handle: SiteModelHandle;
-  const setHover = (b: number) => {
-    if (b !== hoverBlock) {
+  let handle: SiteModelHandle & InspectableModel;
+  const infoOf = (r: BuildingRef): Omit<HoverInfo, 'x' | 'y'> => ({
+    id: r.id,
+    name: r.label,
+    levels: r.sub,
+    storeys: r.detailed ? 'Select to inspect the detailed model' : 'Select to inspect; the detailed model of this type is not built yet',
+  });
+  const setHover = (r: BuildingRef | null) => {
+    // Houses get the whole-house shell; the school and temple are whole blocks already.
+    const b = r && r.house < 0 ? r.block : -1;
+    if (r !== hoverRef || b !== hoverBlock) {
+      hoverRef = r;
       hoverBlock = b;
       dirty = true;
-      canvas.style.cursor = b >= 0 ? 'help' : '';
+      canvas.style.cursor = r ? 'pointer' : '';
     }
-    if (b < 0 || !pointer) return handle.onHover?.(null);
-    const info: Omit<HoverInfo, 'x' | 'y'> =
-      b < N_CLUSTERS
-        ? {
-            id: `cluster-${b + 1}`,
-            name: `Cluster ${b + 1}`,
-            levels: 'Two ground+1 houses and two ground-storey houses',
-            storeys: `Shared court opens to the ${OPEN_NAME[D.CLUSTERS[b].opens]}`,
-          }
-        : b === SCHOOL_ID
-          ? { id: 'school', name: 'Primary school', levels: 'Classrooms, office and a stage', storeys: 'Ground storey' }
-          : { id: 'temple', name: 'Temple of Memories', levels: 'Memorial stone on a stepped plinth in water', storeys: 'Form read from one render' };
-    handle.onHover?.({ ...info, x: pointer.x, y: pointer.y });
+    if (!r || !pointer) return handle.onHover?.(null);
+    handle.onHover?.({ ...infoOf(r), x: pointer.x, y: pointer.y });
   };
-  const pick = () => {
-    needsPick = false;
-    if (!pointer || stage < 0.8 || idea > 0.3) return setHover(-1);
+  const refAt = (): BuildingRef | null => {
+    if (!pointer || stage < 0.8 || idea > 0.3) return null;
     ndc.set((pointer.x / width) * 2 - 1, -(pointer.y / height) * 2 + 1);
     raycaster.setFromCamera(ndc, camera);
     const hit = raycaster.intersectObjects(pickables, false)[0];
-    if (!hit) return setHover(-1);
-    if (hit.instanceId !== undefined && (hit.object as InstancedMesh).isInstancedMesh) return setHover(hit.instanceId);
+    if (!hit) return null;
+    if (hit.instanceId !== undefined && (hit.object as InstancedMesh).isInstancedMesh) {
+      const h = houseAt(hit.instanceId, hit.point);
+      return h >= 0 ? refs[hit.instanceId * D.CLUSTER.houses.length + h] : null;
+    }
     const a = (hit.object as Mesh).geometry.getAttribute('aBlock');
-    setHover(hit.face ? Math.round(a.getX(hit.face.a)) : -1);
+    const b = hit.face ? Math.round(a.getX(hit.face.a)) : -1;
+    return refs.find((r) => r.house < 0 && r.block === b) ?? null;
+  };
+  const pick = () => {
+    needsPick = false;
+    setHover(refAt());
+  };
+  const toScreen = (v: Vector3) => {
+    const p = v.clone().project(camera);
+    if (p.z > 1) return null;
+    return { x: ((p.x + 1) / 2) * width, y: ((1 - p.y) / 2) * height };
   };
 
   let drag: { x: number; y: number; az: number; el: number } | null = null;
@@ -809,13 +880,15 @@ void main() {
       const r = canvas.getBoundingClientRect();
       pointer = { x: e.clientX - r.left, y: e.clientY - r.top };
       needsPick = true;
+      // A click or tap selects the building under it; empty space clears.
+      if (!paused && handle.onSelect) handle.onSelect(refAt()?.id ?? null);
     }
     drag = null;
     if (canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId);
   };
   const onLeave = () => {
     pointer = null;
-    setHover(-1);
+    setHover(null);
   };
   canvas.addEventListener('pointerdown', onDown);
   canvas.addEventListener('pointermove', onMove);
@@ -827,6 +900,54 @@ void main() {
   const STAGE_MAX = D.STAGES.length - 1;
   handle = {
     onHover: null,
+    onSelect: null,
+    buildings: () => refs,
+    previewBuilding(id) {
+      if (previewRef && previewRef.house < 0) pinned = null;
+      previewRef = (id && byId.get(id)) || null;
+      dirty = true;
+      if (!previewRef) {
+        if (!hoverRef) handle.onHover?.(null);
+        return null;
+      }
+      if (previewRef.house < 0) pinned = [previewRef.block, previewRef.block];
+      const at = toScreen(centreOf(previewRef));
+      if (at) handle.onHover?.({ ...infoOf(previewRef), ...at });
+      return at;
+    },
+    focusBuilding(id) {
+      return new Promise<void>((resolve) => {
+        const r = id ? byId.get(id) : undefined;
+        if (r) focusPt.copy(centreOf(r));
+        focusTo = r ? 1 : 0;
+        focusDone?.();
+        focusDone = null;
+        dirty = true;
+        if (opts.still || focusMix === focusTo) {
+          focusMix = focusTo;
+          resolve();
+        } else focusDone = resolve;
+      });
+    },
+    viewFrom(id) {
+      const r = byId.get(id);
+      const d = camera.position.clone();
+      if (r && r.house >= 0) d.applyMatrix4(houseMatrix(r.block, r.house).invert()).sub(new Vector3(houseType(r.house).size[0] / 2, 0, houseType(r.house).size[1] / 2));
+      else if (r) d.sub(centreOf(r));
+      const len = d.length() || 1;
+      return { az: Math.atan2(d.x, -d.z) / DEG, el: Math.asin(Math.max(-1, Math.min(1, d.y / len))) / DEG };
+    },
+    setPaused(p) {
+      paused = p;
+      if (p) {
+        hoverRef = previewRef = null;
+        hoverBlock = -1;
+        pinned = null;
+        canvas.style.cursor = '';
+        handle.onHover?.(null);
+      }
+      dirty = true;
+    },
     setProgress(p) {
       stageTarget = clamp01(p) * STAGE_MAX;
       if (opts.still) stage = stageTarget;
@@ -856,7 +977,17 @@ void main() {
     frame(time) {
       const dt = lastTime ? Math.min(0.1, (time - lastTime) / 1000) : 0;
       lastTime = time;
+      // While a building is inspected the plan is not rendered at all.
+      if (paused && !dirty) return;
       let moving = false;
+      if (focusMix !== focusTo) {
+        focusMix += Math.sign(focusTo - focusMix) * Math.min(Math.abs(focusTo - focusMix), dt / 0.8);
+        moving = true;
+        if (focusMix === focusTo) {
+          focusDone?.();
+          focusDone = null;
+        }
+      }
       if (Math.abs(stageTarget - stage) > 1e-4) {
         stage += (stageTarget - stage) * (1 - Math.exp(-dt * 5));
         moving = true;
@@ -865,7 +996,7 @@ void main() {
         idea += Math.sign(ideaTarget - idea) * Math.min(Math.abs(ideaTarget - idea), dt / 1.4);
         moving = true;
       }
-      if (needsPick) pick();
+      if (needsPick && !paused) pick();
       if (hoverMix > 0.005 && hoverMix < 0.995) moving = true;
       const animated = (!opts.still && !opts.debugView) || idea > 0;
       const due = time - lastRender > (moving || dirty ? 0 : 33);

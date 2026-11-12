@@ -8,7 +8,8 @@
  */
 import { prefersReducedMotion } from '../shell/motion';
 import { mountWhenVisible } from '../three/slot';
-import type { CreateModel, Mode, SiteModelHandle } from '../models/types';
+import type { CreateModel, InspectableModel, Mode, SiteModelHandle } from '../models/types';
+import { createInspectController } from '../inspect/controller';
 
 const LOADERS: Record<string, () => Promise<CreateModel>> = {
   'residential-school': () => import('../models/residential-school').then((m) => m.createResidentialSchool),
@@ -83,6 +84,7 @@ export function initProject(): void {
   const last = Math.max(1, steps.length - 1);
 
   let model: SiteModelHandle | null = null;
+  const inspect = createInspectController(story, still);
   let progress = 0;
   let mode: Mode = 'site';
   let pinned: string | null = null;
@@ -107,10 +109,12 @@ export function initProject(): void {
     const dispose = h.dispose.bind(h);
     h.dispose = () => {
       model = null;
+      inspect.detach();
       if (tip) tip.hidden = true;
       dispose();
     };
     model = h;
+    inspect.attach(h as SiteModelHandle & Partial<InspectableModel>);
     return h;
   });
 

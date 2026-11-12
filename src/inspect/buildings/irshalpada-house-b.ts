@@ -451,7 +451,7 @@ export const module: TypeModule = {
       ],
       liftLabel: ['Separate the floors', 'Put the floors back'],
       poche,
-      clipped: [...SOLID.map((k) => (mats as unknown as Record<string, Material>)[k]), mats.glass, mats.fret, mats.rail, mats.brass, mats.steel, mats.cloth],
+      clipped: [...SOLID.map((k) => (mats as unknown as Record<string, Material>)[k]).filter(Boolean), mats.glass, mats.fret, mats.rail, mats.brass, mats.steel, mats.cloth],
       glass: [mats.glass],
       lamps,
       people,

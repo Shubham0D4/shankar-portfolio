@@ -41,7 +41,7 @@ export const TYPE_NAMES: Record<string, string> = {
 };
 
 /** Types with a detailed module in src/inspect/buildings. */
-export const DETAILED_TYPES = new Set(['irshalpada-house-a', 'irshalpada-house-b', 'irshalpada-school']);
+export const DETAILED_TYPES = new Set(['irshalpada-house-a', 'irshalpada-house-b', 'irshalpada-school', 'irshalpada-temple']);
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
@@ -68,7 +68,7 @@ export function irshalpadaBuildings(): BuildingRef[] {
   const n = D.CLUSTERS.length;
   out.push(
     { id: 'irshalpada-school', typeId: 'irshalpada-school', kind: 'school', label: 'Primary school', sub: 'Classrooms, office and a stage', block: n, house: -1, plot: 0, detailed: DETAILED_TYPES.has('irshalpada-school') },
-    { id: 'irshalpada-temple', typeId: 'irshalpada-temple', kind: 'temple', label: 'Temple of Memories', sub: 'Memorial on a stepped plinth in water', block: n + 1, house: -1, plot: 0, detailed: false },
+    { id: 'irshalpada-temple', typeId: 'irshalpada-temple', kind: 'temple', label: 'Temple of Memories', sub: 'Memorial on a stepped plinth in water', block: n + 1, house: -1, plot: 0, detailed: DETAILED_TYPES.has('irshalpada-temple') },
   );
   return out;
 }

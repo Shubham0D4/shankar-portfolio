@@ -20,6 +20,11 @@ import type { MaterialSet } from '../tex';
 import type { PlanSheet } from '../types';
 
 export type Key =
+  | 'granite'
+  | 'ashlar'
+  | 'rock'
+  | 'water'
+  | 'flame'
   | 'plaster'
   | 'plinth'
   | 'mud'
@@ -598,7 +603,7 @@ export function emptyPlan(bounds: [number, number, number, number]): PlanSheet {
 /* ---------- Meshes ---------- */
 
 /** Keys that form closed solids, so they get a back-face poché twin for the section cut. */
-export const SOLID: Key[] = ['plaster', 'plinth', 'mud', 'timber', 'board', 'tile', 'basalt', 'clay', 'bamboo'];
+export const SOLID: Key[] = ['plaster', 'plinth', 'mud', 'timber', 'board', 'tile', 'basalt', 'clay', 'bamboo', 'granite', 'ashlar', 'rock'];
 
 export function meshes(geos: Map<Key, BufferGeometry>, mats: MaterialSet, parent: Group, poche: Mesh[], pocheMat: MeshBasicMaterial, own?: BufferGeometry[]): void {
   for (const [k, g] of geos) {

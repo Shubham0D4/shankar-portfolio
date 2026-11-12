@@ -44,7 +44,7 @@ import * as D from '../models/irshalpada.data';
 import { boxUV } from './kit';
 import type { BuildingRef } from './registry';
 import { TYPE_NAMES } from './registry';
-import { materials, releaseMaterials, type MaterialSet, type Tier } from './tex';
+import { materials, releaseMaterials, textureBytes, type MaterialSet, type Tier } from './tex';
 import type { BuildingInstance, PlanSheet, TypeModule } from './types';
 
 export interface InspectOptions {
@@ -90,7 +90,9 @@ function loadType(typeId: string): Promise<TypeModule> {
           ? import('./buildings/irshalpada-house-b').then((m) => m.module)
           : typeId === 'irshalpada-school'
             ? import('./buildings/irshalpada-school').then((m) => m.module)
-            : import('./buildings/massing').then((m) => m.massingModule(typeId));
+            : typeId === 'irshalpada-temple'
+              ? import('./buildings/irshalpada-temple').then((m) => m.module)
+              : import('./buildings/massing').then((m) => m.massingModule(typeId));
     modules.set(typeId, p);
   }
   return p;
@@ -639,7 +641,7 @@ export async function openInspect(o: InspectOptions): Promise<InspectSession> {
       triangles: info.render.triangles,
       geometries: info.memory.geometries,
       textures: info.memory.textures,
-      textureMB: +((mats.textureBytes + shadow) / 1048576).toFixed(1),
+      textureMB: +((textureBytes(S.tier) + shadow) / 1048576).toFixed(1),
       pixelRatio: renderer.getPixelRatio(),
     };
     const dl = stats.querySelector('dl')!;

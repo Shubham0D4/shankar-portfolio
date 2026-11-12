@@ -475,7 +475,149 @@ export function materials(tier: Tier): MaterialSet {
   return set;
 }
 
+/* ---------- Temple of Memories (built only when the temple is opened) ---------- */
+
+/**
+ * Black stone of the plates [read from the p39 render]: near-black with a dense
+ * brown-gold fleck that turns the lit faces warm brown. Repeats every 1.5 m.
+ */
+function granite(size: number) {
+  const n = fbm(101, 4, 4);
+  const sp = lattice(size / 2, 102);
+  const mica = lattice(size / 3, 103);
+  const a = lin(0x1a1411);
+  const b = lin(0x0e0b09);
+  const fleck = lin(0x6e4a2c);
+  const glint = lin(0xb39572);
+  return paint(size, (u, v, o) => {
+    const m = n(u, v);
+    const s = sp(u, v);
+    const f = Math.max(0, s - 0.58) * 2.4;
+    o.h = 0.45 + 0.15 * m + 0.4 * f;
+    mix3(a, b, m, o.c);
+    mix3(o.c, fleck, Math.min(0.7, f * 1.1), o.c);
+    if (mica(u, v) > 0.92) mix3(o.c, glint, 0.45, o.c);
+    o.r = 0.8 - 0.15 * f;
+  });
+}
+
+/**
+ * Sandstone ashlar of the plinth [read from the p39 render]: cream blocks of
+ * mixed length, one course per 0.45 m step, fine joints. The tile is two
+ * courses, 0.9 m square, so the courses line up with the steps.
+ */
+function ashlar(size: number) {
+  const n = fbm(111, 4, 4);
+  const cell = lattice(16, 112);
+  const joints = [
+    [0, 0.41, 0.73],
+    [0.18, 0.55, 0.86],
+  ];
+  const a = lin(0xe6d6bb);
+  const b = lin(0xcdb894);
+  const stain = lin(0xa89474);
+  return paint(size, (u, v, o) => {
+    const j = v < 0.5 ? 0 : 1;
+    const fv = (v * 2) % 1;
+    const js = joints[j];
+    let k = 0;
+    for (let i = 0; i < js.length; i++) if (u >= js[i]) k = i;
+    const dj = Math.min(...js.map((x) => Math.min(Math.abs(u - x), 1 - Math.abs(u - x))));
+    const bed = Math.min(fv, 1 - fv);
+    const joint = dj < 0.008 || bed < 0.012;
+    const m = n(u, v);
+    o.h = joint ? 0.15 : 0.62 + 0.25 * m;
+    mix3(a, b, cell((k + j * 3) / 16 + 0.01, 0.3) * 0.8 + 0.2 * m, o.c);
+    if (fv < 0.25) mix3(o.c, stain, (0.25 - fv) * 0.6 * m, o.c);
+    if (joint) mix3(o.c, stain, 0.7, o.c);
+    o.r = 0.86;
+  });
+}
+
+/** Weathered boulder for the memorial stone [read: pale grey rock in the render]. Repeats every 1 m. */
+function boulder(size: number) {
+  const n = fbm(121, 4, 5);
+  const lichen = fbm(122, 3, 3);
+  const a = lin(0xc4bbad);
+  const b = lin(0x8e877c);
+  const dark = lin(0x4c4842);
+  return paint(size, (u, v, o) => {
+    const m = n(u, v);
+    o.h = m;
+    mix3(a, b, m, o.c);
+    const l = lichen(u, v);
+    if (l > 0.6) mix3(o.c, dark, Math.min(0.7, (l - 0.6) * 3), o.c);
+    o.r = 0.92;
+  });
+}
+
+/** Pool ripples [assumed]: a soft height field for the normal map only. Repeats every 2 m. */
+function ripples(size: number) {
+  const n = fbm(131, 3, 3);
+  const a = lin(0x2a4a50);
+  return paint(size, (u, v, o) => {
+    o.h = n(u, v);
+    mix3(a, a, 0, o.c);
+    o.r = 0.05;
+  });
+}
+
+export interface MemorialSet {
+  granite: MeshStandardMaterial;
+  ashlar: MeshStandardMaterial;
+  rock: MeshStandardMaterial;
+  water: MeshStandardMaterial;
+  /** Oil-lamp flames: dark by day, glowing at dusk with the stage's glass. */
+  flame: MeshStandardMaterial;
+  textureBytes: number;
+  dispose(): void;
+}
+
+const memorialCache = new Map<Tier, MemorialSet>();
+
+export function memorialMaterials(tier: Tier): MemorialSet {
+  const hit = memorialCache.get(tier);
+  if (hit) return hit;
+  const big = tier === 'high' ? 512 : 256;
+  const small = tier === 'high' ? 256 : 128;
+  const textures: Texture[] = [];
+  let bytes = 0;
+  const make = (size: number, painted: Painted, o: { bump: number; aoStrength: number; repeat: number }) => {
+    const t = toTextures(size, painted, o);
+    textures.push(t.map, t.normalMap, t.arm);
+    bytes += 3 * size * size * 4 * 1.33;
+    return t;
+  };
+  const std = (t: ReturnType<typeof make>, normal = 1) =>
+    new MeshStandardMaterial({ map: t.map, normalMap: t.normalMap, normalScale: new Vector2(normal, normal), aoMap: t.arm, aoMapIntensity: 0.8, roughnessMap: t.arm, roughness: 1 });
+  const tG = make(big, granite(big), { bump: 2.2, aoStrength: 2, repeat: 1.5 });
+  const tA = make(small, ashlar(small), { bump: 2.5, aoStrength: 4, repeat: 0.9 });
+  const tR = make(small, boulder(small), { bump: 3, aoStrength: 3, repeat: 1 });
+  const tW = make(small, ripples(small), { bump: 0.8, aoStrength: 0, repeat: 2 });
+  const set: MemorialSet = {
+    granite: std(tG, 0.8),
+    ashlar: std(tA, 1.2),
+    rock: std(tR, 1.5),
+    water: new MeshStandardMaterial({ color: 0x2b4b52, normalMap: tW.normalMap, normalScale: new Vector2(0.35, 0.35), roughness: 0.06, metalness: 0.05, transparent: true, opacity: 0.8 }),
+    flame: new MeshStandardMaterial({ color: 0x4a3420, roughness: 0.6, emissive: new Color(0xffa64a), emissiveIntensity: 0 }),
+    textureBytes: bytes,
+    dispose() {
+      textures.forEach((t) => t.dispose());
+      for (const k of ['granite', 'ashlar', 'rock', 'water', 'flame'] as const) set[k].dispose();
+      memorialCache.delete(tier);
+    },
+  };
+  memorialCache.set(tier, set);
+  return set;
+}
+
+/** Texture bytes held by every material set built for this tier so far. */
+export function textureBytes(tier: Tier): number {
+  return (cache.get(tier)?.textureBytes ?? 0) + (memorialCache.get(tier)?.textureBytes ?? 0);
+}
+
 /** Releases every cached material set (page hide). */
 export function releaseMaterials(): void {
   for (const s of [...cache.values()]) s.dispose();
+  for (const s of [...memorialCache.values()]) s.dispose();
 }

@@ -671,6 +671,8 @@ Building all 30 types to this level is not realistic from this PDF. **Only Irsha
 | No drawings | School hostels, staff houses, auditorium. Sukoon suites, dorms, spa, gym. Mass-housing podiums. Irshalpada temple | Nothing beyond the plan footprint or one render | **Do not detail.** Inspect shows the plan massing with a note that no drawings exist. |
 | Too large for the stage | Mass-housing towers (about 145 m), Dharavi towers | The section and the floor plate | Detail **one typical floor plate** and the crown, not the whole tower |
 
+The temple was later built in detail at the client's request, from its single render, with every size tagged as assumed (§7.12).
+
 The first type built end to end is **type A**, which has the richest set of sheets. **The work then stops for review**, as the brief asks.
 
 ### 7.5 How it is built
@@ -744,7 +746,8 @@ All figures are from headless Chrome with software WebGL (SwiftShader) at 1440 �
 | B, detailed | low | 83 | 77,400 | 3.9 MB materials + 4 MB shadow map |
 | School, detailed | high | 38 | 138,900 | 15.5 MB materials + 16 MB shadow map |
 | School, detailed | low | 38 | 121,900 | 3.9 MB materials + 4 MB shadow map |
-| Temple, massing | high / low | 7 | 24,800 / 7,800 | Ground textures only |
+| Temple, detailed | high | 27 | 61,300 | 22.4 MB materials (7 MB of it the temple's own, built on first visit) + 16 MB shadow map |
+| Temple, detailed | low | 27 | 36,600 | 5.6 MB materials + 4 MB shadow map |
 
 - The stage ground accounts for 24,000 triangles on the high tier and 7,000 on the low tier.
 - The stage renders only when something changes: an orbit, a toggle or a transition. A still view costs nothing.
@@ -752,10 +755,11 @@ All figures are from headless Chrome with software WebGL (SwiftShader) at 1440 �
 
 | Chunk | Size |
 |---|---|
-| Stage | 16.9 KB |
+| Stage | 18.0 KB |
 | Type A | 4.4 KB |
 | Type B | 5.4 KB |
 | School | 4.6 KB |
+| Temple | 4.2 KB |
 | Shared vocabulary | in a shared chunk |
 | Fallback | 1.5 KB |
 
@@ -982,4 +986,82 @@ The full list is in §7.6.
 - **Battened screens.** Their extent is read from one section.
 - **Triangle count.** It is high for the low tier: about 122,000. Most of it is the nine trees and 25 people; the low tier saves only on the ground.
 - **Plan scale.** ±20 %, as for the houses.
+
+### 7.12 The Temple of Memories (p39), built 2026-11-12
+
+There is **no plan, section, elevation or dimension** for the temple. It is built from the single p39 render and the sheet's text, at the client's request. What the render shows is modelled as shown. Every size is proportioned from the render and from the plan model's footprint (`TEMPLE` in `irshalpada.data.ts`), and every size is tagged as assumed.
+
+**Read from the render**
+
+| Item | Reading |
+|---|---|
+| Plates | Four black stone plates on the sides of a square, turned 45° to the plinth, with a slit at every corner. From the front, each slit has two narrow faces beside it: one lit, matching the right plate's broad face, and one dark, matching the left plate's. So each plate **turns in at both ends**, and the slit is a deep, narrowing channel. |
+| Plate tops | One sloping plane: lowest at the front slit, higher at the side corners, highest at the back slit. This is how the stone shows over the front edge. |
+| Stone | A pale grey boulder held at the top between the plates. The text says the memorial "is in Grasp of Past now". |
+| Core | Dark rubble stone fills the inside, seen through the slit from top to bottom. |
+| Plinth | Three square steps of cream sandstone ashlar, one course per step, with blocks of mixed length. Square to the view while the plates are turned 45° to it. |
+| Pool | The plinth stands in a shallow pool with a sandstone coping. |
+| Seating wall | Grey stone, round the pool, with brick paving between it and the coping. Villagers sit on it: a mother with a child, a woman and two men in white. |
+| Planting | Red flowering shrubs and trees behind the wall. |
+| Material of the plates | Near-black stone with a dense brown-gold fleck, which reads warm brown in sunlight. |
+
+**Proportions** (assumed)
+
+| Item | Value | How it was found |
+|---|---|---|
+| Plates' square | 2.7 m centre to corner (the plan model's value) | The plates span about 70 % of the top step in the render. Allowing for perspective, that gives 2.6–2.7 m. |
+| Ends of the plates | Each stops 0.69 m short of its corner and turns in 0.5 m. The plates are 0.24 m thick. | From the ratio of broad face to return to slit in the render: about 245 : 50 : 40 px |
+| Plate height above the plinth | 4.3 m at the front slit, 5.2 m at the side corners, 6.1 m at the back | Broad faces are about 2.4 m wide; heights scale from them. The plan model's flat 6.0 m matches the back. |
+| Plinth | Steps 8.4, 7.2 and 6.0 m, each 0.45 m high (the plan model's values) | — |
+| Pool | 12 m square to the coping | — |
+| Paving | A band 0.5 m wide | — |
+| Seating wall | 0.45 m thick, 0.56 m to the seat; ring 14.5 m | — |
+
+**Assumed**, beyond the sizes above:
+- **Orientation.** The low side faces south. The PDF does not say. Facing south, the stage's south-east sun lights the plates as the render does, with the left plate in shadow and the right plate lit. The school's court, 40 m to the north, then looks at the tall back.
+- **Openings.** Openings 1.8 m wide in the seating wall where the paths across the green arrive. The render shows no way in, and the plan model's ring is closed.
+- **Lamps and offerings.** Oil lamps along the middle step and marigolds at the front slit.
+- **Planting.** Tree positions and species.
+- **Rubble core.** How it is built: stacked boulders.
+
+**Context.** The primary school appears as a ghost of the plan model, 40 m north across the green.
+
+**Interactions.** "Lift the plates" raises the plates 3.6 m to show the rubble core and the stone. The section cut shows the plinth as one solid, without overlapping boxes. The water and the pool floor stop at the plinth's foot. At dusk the lamps glow and three warm lights wash the front of the plinth.
+
+**Performance.** The temple's four materials are built only when it is first opened:
+
+| Material | Size |
+|---|---|
+| Granite | 512 px high, 256 px low |
+| Ashlar | 256 / 128 px |
+| Boulder | 256 / 128 px |
+| Water ripples | 256 / 128 px |
+
+They add 7 MB of texture memory on the high tier and 1.8 MB on the low tier, and are released with the other materials when the page is hidden.
+
+| Tier | Draw calls | Triangles |
+|---|---|---|
+| High | 27 | 61,300 |
+| Low | 27 | 36,600 |
+
+The JavaScript chunk is 4.2 KB gzipped.
+
+**Verification**
+- **Screenshots.** Arrival, as rendered on p39, aerial, back, slit close-up, the school behind, plates lifted, section and dusk with people. They are in `.inspect-review/t*.png`.
+- **Heap.** Ten temple visits: 11.32 MB after the first visit, then 11.64 → 12.07 MB, levelling off. This is the same curve as the other types.
+- **Plan scene.** After the visits it renders 33 calls and 31,372 triangles, unchanged.
+
+**Fidelity report: the temple**
+
+*Matches the render*
+- **Plates.** Four folded black plates with the slits at the corners. From the front, the slit shows a lit return and a dark one, with the rubble core behind.
+- **Stone.** The pale stone sits over the low front edge, and the tops rise towards the back.
+- **Plinth.** Three ashlar steps standing in water.
+- **Surroundings.** The brick paving, the grey seating wall with villagers on it, and the red shrubs.
+
+*Differs* (known)
+- **Sizes.** Every size is a proportion, not a dimension.
+- **Plan model.** It keeps its flat 6 m plates, which the brief does not allow changing, so the plan and the inspect model differ in the plates' tops and ends.
+- **Plate texture.** The render's plates have a rough, sand-blasted look. The model's flecked stone is close, but brighter on the lit faces at midday.
+- **Approach.** The render does not show how anyone reaches the seating wall. The openings are an assumption.
 

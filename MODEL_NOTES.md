@@ -681,7 +681,7 @@ The first type built end to end is **type A**, which has the richest set of shee
 | Placement | `src/models/irshalpada.place.ts` | House-local to world matrices, the same chain `buildCluster()` applies. Also picks the house from a cluster hit. |
 | Plan side | `src/models/irshalpada.ts`, `src/inspect/controller.ts` | Covers hover, select, the camera glide, pause, the dim, keyboard access and the URL. With nothing hovered, nothing extra is drawn. |
 | Stage | `src/inspect/inspect.ts` | Its own renderer and scene, rendered on demand. Controls: orbit, day and dusk, people, labels, roof lift, section cut, plan inset, and previous and next. |
-| Detailed types | `src/inspect/buildings/irshalpada-house-a.ts` and `irshalpada-house-b.ts` | Each module holds only its own readings. The fixed fabric is cached per device tier. Leaves, planting and people vary with the plot number. |
+| Detailed types | `src/inspect/buildings/irshalpada-house-a.ts`, `irshalpada-house-b.ts` and `irshalpada-school.ts` | Each module holds only its own readings. The fixed fabric is cached per device tier. Leaves, planting and people vary with the plot number. |
 | Shared vocabulary | `src/inspect/buildings/vernacular.ts` | Roof planes (a gable is two planes, a lean-to is one), with valances and rafter tails only on edges in the open. Walls whose tops follow the roofs or stop under a slab. Casements, shutters, panelled and louvred doors, jali, vents, turned posts, beams, plinths, steps and compound walls. |
 | Fallback | `src/inspect/buildings/massing.ts` | Any type without a detailed module shows the plan model's own massing, labelled "Massing only". |
 | Materials | `src/inspect/tex.ts` | Procedural PBR, built from tileable height fields: colour, normal, and packed AO, roughness and metalness. Capped at 512 px (256 on the low tier). |
@@ -742,7 +742,8 @@ All figures are from headless Chrome with software WebGL (SwiftShader) at 1440 �
 | A, detailed | low | 50 | 65,900 | 3.6 MB materials + 4 MB shadow map |
 | B, detailed | high | 83 | 94,400 | 15.5 MB materials + 16 MB shadow map |
 | B, detailed | low | 83 | 77,400 | 3.9 MB materials + 4 MB shadow map |
-| School, massing | high / low | 11 | 26,800 / 9,800 | Ground textures only |
+| School, detailed | high | 38 | 138,900 | 15.5 MB materials + 16 MB shadow map |
+| School, detailed | low | 38 | 121,900 | 3.9 MB materials + 4 MB shadow map |
 | Temple, massing | high / low | 7 | 24,800 / 7,800 | Ground textures only |
 
 - The stage ground accounts for 24,000 triangles on the high tier and 7,000 on the low tier.
@@ -754,6 +755,7 @@ All figures are from headless Chrome with software WebGL (SwiftShader) at 1440 �
 | Stage | 16.9 KB |
 | Type A | 4.4 KB |
 | Type B | 5.4 KB |
+| School | 4.6 KB |
 | Shared vocabulary | in a shared chunk |
 | Fallback | 1.5 KB |
 
@@ -928,4 +930,56 @@ The full list is in §7.6.
 - **Canopy.** Its extent is fitted between the elevation and section BB′, which do not agree exactly.
 - **Railing.** A generic pattern, not traced from the render.
 - **Plan scale.** ±20 %, as for type A.
+
+### 7.11 The primary school (p43), built 2026-11-12
+
+**Readings**
+
+| Item | Value | Basis |
+|---|---|---|
+| Legend | 1 classroom, 2 staff room, 3 principal cabin, 4 office, 5 toilet, 6 multi-purpose area | **[stated]** |
+| Plinth, door and window heads, wing ridges, main ridge | +0.60, +2.70, +5.30, +5.80 | **[stated]** |
+| Window sills | About +1.60 | [read] from section BB′ |
+| Main eaves | About +3.30 | [read]. Scaled off section BB′ at about 37.7 px/m vertically. |
+| Wing outer eaves | About +3.60 | [read], as for the main eaves |
+| Plan | Main block 26.6 × 10.2 m. Two toilets at the back corners, a classroom each side, the principal's cabin and office on the left of the hall, the staff room and stores on the right. The hall runs straight through the block. Three classroom wings on each side step out round the court. The stage projects into the court with steps on three sides. | [read] at about 32 px/m on the 250 dpi crop, which agrees with the plan model's footprint |
+| Classrooms | **Eight** (labelled 1): one each side in the main block and three in each set of wings | [read] from the labels. MODEL_NOTES §2 had seven. |
+| Roofs | Every ridge runs north–south: all the roof plan's arrows point east or west, and both sections and the elevation agree. The main block is one shallow gable from +5.80 to +3.30 over x ±13.5. Each wing has its own gable to +5.30, with the ridge on the classroom's inner wall. The roof extents are from the roof plan at about 31 px/m. The wings' court-side slopes keep the outer slope's pitch, so their eaves stand higher (about +3.6 to +4.4) over the verandahs. | [read] |
+| Hall | Open at both ends, tall turned posts at its mouths (elevation and section BB′). Timber battened screens between +3.5 and the roof over the hall's verandah ends. | [read] from section AA′ |
+| Steps | North entrance from the road. The stage on three sides. Off the outermost wings to the south and from the middle wings into the court. | [read] |
+| Trees | Nine, at the plan's tree symbols | [read] |
+| People | Children in light-blue shirts with navy shorts or skirts: a ring game on the court, a class on the stage, children seated on a wing verandah | [read] from the four renders |
+
+**Assumed**
+
+| Item | Basis |
+|---|---|
+| Door swings and some window positions where the plan's arcs are unclear | ±0.3 m |
+| Names of the three small rooms on the right | Store, staff WC, store |
+| Classroom furniture: a blackboard on the outer wall, a teacher's table and rows of durries | The renders show children seated on the floor |
+| Office, cabin and staff-room furniture, and toilet cubicle partitions | Not in the drawings |
+| Flagpole on the court | Not in the drawings |
+| Tree species | Not stated |
+| Riser height | 200 mm |
+
+**Verification**
+- Arrival, court, aerial, back, hall, wing verandah, roofs lifted, section and dusk were rendered. The screenshots are in `.inspect-review/s*.png`.
+- **Heap.** Ten visits alternating the school and a type A house: 11.57 MB after the first visit, then 11.74 → 12.55 MB. This is the same levelling warm-up curve as the houses.
+- **Stage changes.** The stage now fits its shadow camera, zoom limit and pan range to each building's size. The school is about 40 m across; the houses keep their settings.
+
+**Fidelity report: the school**
+
+*Matches the PDF*
+- **Plan.** Room layout and legend, the hall through the block, and the three stepped wings each side holding the court and stage.
+- **Roofs.** All ridges north–south. A shallow main gable to +5.80, and a gable to +5.30 on each wing with the ridge on the classroom's inner wall.
+- **Elevation.** The white gables and the central opening flanked by tall posts, as in the court render.
+- **Woodwork.** Turned posts with brass rings, and carved valances.
+- **Verandahs.** Plinths and steps down to the lawn, as in the renders.
+
+*Differs* (known)
+- **Wing pitch.** The court-side pitch of the wing roofs is inferred from the roof plan's extents. The sections show those slopes only in part.
+- **Overlaps.** Where a wing roof overlaps its neighbour or the main roof, the tiles intersect instead of meeting in a proper valley.
+- **Battened screens.** Their extent is read from one section.
+- **Triangle count.** It is high for the low tier: about 122,000. Most of it is the nine trees and 25 people; the low tier saves only on the ground.
+- **Plan scale.** ±20 %, as for the houses.
 

@@ -88,7 +88,9 @@ function loadType(typeId: string): Promise<TypeModule> {
         ? import('./buildings/irshalpada-house-a').then((m) => m.module)
         : typeId === 'irshalpada-house-b'
           ? import('./buildings/irshalpada-house-b').then((m) => m.module)
-          : import('./buildings/massing').then((m) => m.massingModule(typeId));
+          : typeId === 'irshalpada-school'
+            ? import('./buildings/irshalpada-school').then((m) => m.module)
+            : import('./buildings/massing').then((m) => m.massingModule(typeId));
     modules.set(typeId, p);
   }
   return p;
@@ -397,6 +399,13 @@ export async function openInspect(o: InspectOptions): Promise<InspectSession> {
     for (const m of inst.clipped) m.clippingPlanes = [plane];
     for (const p of inst.poche) (p.material as Material).clippingPlanes = [plane];
     setPeople(peopleB.getAttribute('aria-pressed') === 'true');
+    // Fit the shadow camera and the zoom limit to the building.
+    const half = Math.max(24, inst.radius * 1.35);
+    const scam = sun.shadow.camera;
+    scam.left = scam.bottom = -half;
+    scam.right = scam.top = half;
+    scam.updateProjectionMatrix();
+    orbit.maxDistance = Math.max(58, inst.radius * 3);
     roofB.disabled = !inst.layers.length;
     roofB.textContent = inst.liftLabel[roofB.getAttribute('aria-pressed') === 'true' ? 1 : 0];
     peopleB.disabled = !inst.people.children.length;
@@ -684,8 +693,9 @@ export async function openInspect(o: InspectOptions): Promise<InspectSession> {
     }
     const moved = orbit.update();
     // Keep the pan target near the building.
-    orbit.target.x = clamp(orbit.target.x, -14, 14);
-    orbit.target.z = clamp(orbit.target.z, -12, 12);
+    const reach = Math.max(14, (inst?.radius ?? 15) * 0.9);
+    orbit.target.x = clamp(orbit.target.x, -reach, reach);
+    orbit.target.z = clamp(orbit.target.z, -reach, reach);
     orbit.target.y = clamp(orbit.target.y, 0.3, 5);
     renderer.render(scene, camera);
     placeLabels();
